@@ -16,13 +16,14 @@
  *
  */
 
-import { GenericAdapterBuilder } from '../../builder/GenericAdapterBuilder';
 import { DataLakeFilterConfig } from '../../model/DataLakeFilterConfig';
 import { DataExplorerWidget } from '../../model/DataExplorerWidget';
 import { DataSetUtils } from '../DataSetUtils';
 import { PrepareTestDataUtils } from '../PrepareTestDataUtils';
 import { FileManagementUtils } from '../FileManagementUtils';
 import { ConnectUtils } from '../connect/ConnectUtils';
+import { ConnectBtns } from '../connect/ConnectBtns';
+import { AdapterBuilder } from '../../builder/AdapterBuilder';
 
 export class DataLakeUtils {
     public static goToDatalake() {
@@ -34,7 +35,7 @@ export class DataLakeUtils {
         storeInDataLake: boolean = true,
         format: 'csv' | 'json_array',
     ) {
-        const adapterBuilder = GenericAdapterBuilder.create('File_Stream')
+        const adapterBuilder = AdapterBuilder.create('File_Stream')
             .setName(name)
             .setTimestampProperty('timestamp')
             .addDimensionProperty('randomtext')
@@ -48,8 +49,8 @@ export class DataLakeUtils {
         if (format === 'csv') {
             adapterBuilder
                 .setFormat('csv')
-                .addFormatInput('input', 'delimiter', ';')
-                .addFormatInput('checkbox', 'header', 'check');
+                .addFormatInput('input', ConnectBtns.csvDelimiter(), ';')
+                .addFormatInput('checkbox', ConnectBtns.csvHeader(), 'check');
         } else {
             adapterBuilder.setFormat('json_array');
         }
@@ -74,7 +75,8 @@ export class DataLakeUtils {
             format,
         );
 
-        ConnectUtils.addGenericStreamAdapter(adapter);
+        ConnectUtils.addAdapter(adapter);
+        ConnectUtils.startAdapter(adapter);
     }
 
     public static addDataViewAndWidget(
@@ -84,9 +86,10 @@ export class DataLakeUtils {
     ) {
         DataLakeUtils.goToDatalake();
         DataLakeUtils.createAndEditDataView(dataViewName);
+
         DataLakeUtils.selectTimeRange(
-            new Date(2020, 10, 20, 22, 44),
-            new Date(2021, 10, 20, 22, 44),
+            new Date(2015, 10, 20, 22, 44),
+            DataLakeUtils.getFutureDate(),
         );
         // DataLakeUtils.addNewWidget();
         DataLakeUtils.selectDataSet(dataSet);
@@ -255,16 +258,19 @@ export class DataLakeUtils {
     }
 
     public static selectDataConfig() {
-        cy.get('.mat-tab-label').contains('Data').parent().click();
+        cy.get('.mdc-tab__text-label').contains('Data').parent().click();
     }
 
     public static selectVisualizationConfig() {
         // Click Next button
-        cy.get('.mat-tab-label').contains('Visualization').parent().click();
+        cy.get('.mdc-tab__text-label')
+            .contains('Visualization')
+            .parent()
+            .click();
     }
 
     public static selectAppearanceConfig() {
-        cy.get('.mat-tab-label').contains('Appearance').parent().click();
+        cy.get('.mdc-tab__text-label').contains('Appearance').parent().click();
     }
 
     public static clickCreateButton() {
@@ -304,9 +310,36 @@ export class DataLakeUtils {
     }
 
     public static selectTimeRange(from: Date, to: Date) {
-        cy.dataCy('1_year').click();
-        // TODO fix time range selection
-        // DataLakeUtils.setTimeInput('time-range-from', from);
-        // DataLakeUtils.setTimeInput('time-range-to', to);
+        DataLakeUtils.setTimeInput('time-range-from', from);
+        DataLakeUtils.clickSetTime();
+        DataLakeUtils.setTimeInput('time-range-to', to);
+        DataLakeUtils.clickSetTime();
+    }
+
+    public static setTimeInput(field: string, date: Date) {
+        cy.dataCy(field)
+            .clear({ force: true })
+            .type(DataLakeUtils.makeTimeString(date), { force: true });
+    }
+
+    public static clickSetTime() {
+        cy.get('.owl-dt-container-buttons > button:nth-child(2)').click();
+    }
+
+    public static makeTimeString(date: Date) {
+        return date.toLocaleString('en-US', {
+            month: 'numeric',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+        });
+    }
+
+    public static getFutureDate() {
+        const currentDate = new Date();
+        currentDate.setMonth(currentDate.getMonth() + 1);
+
+        return currentDate;
     }
 }

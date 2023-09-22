@@ -19,7 +19,7 @@
 import { NgModule } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule } from '@ngbracket/ngx-layout';
 import { CommonModule } from '@angular/common';
 import { StreampipesComponent } from './components/streampipes/streampipes.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,6 +38,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SpBreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { SharedUiModule } from '@streampipes/shared-ui';
+import { ShortenPipe } from './pipes/shorten.pipe';
 
 @NgModule({
     imports: [
@@ -65,7 +66,8 @@ import { SharedUiModule } from '@streampipes/shared-ui';
         StreampipesComponent,
         IconbarComponent,
         ToolbarComponent,
+        ShortenPipe,
     ],
-    providers: [],
+    providers: [ShortenPipe],
 })
 export class CoreModule {}

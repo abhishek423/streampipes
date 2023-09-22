@@ -18,17 +18,8 @@
 
 package org.apache.streampipes.manager.execution.endpoint;
 
-import org.apache.streampipes.commons.constants.GlobalStreamPipesConstants;
 import org.apache.streampipes.commons.exceptions.NoServiceEndpointsAvailableException;
-import org.apache.streampipes.model.SpDataSet;
 import org.apache.streampipes.model.base.InvocableStreamPipesEntity;
-import org.apache.streampipes.svcdiscovery.SpServiceDiscovery;
-import org.apache.streampipes.svcdiscovery.api.model.DefaultSpServiceGroups;
-import org.apache.streampipes.svcdiscovery.api.model.DefaultSpServiceTags;
-import org.apache.streampipes.svcdiscovery.api.model.SpServiceUrlProvider;
-
-import java.util.Collections;
-import java.util.List;
 
 public class ExtensionsServiceEndpointProvider {
 
@@ -37,26 +28,5 @@ public class ExtensionsServiceEndpointProvider {
         g.getAppId(),
         ExtensionsServiceEndpointUtils.getPipelineElementType(g))
         .getEndpointResourceUrl();
-  }
-
-  public String findSelectedEndpoint(SpDataSet ds) throws NoServiceEndpointsAvailableException {
-    String appId = ds.getAppId() != null ? ds.getAppId() : ds.getCorrespondingAdapterId();
-    if (ds.isInternallyManaged()) {
-      return getConnectMasterSourcesUrl();
-    } else {
-      return new ExtensionsServiceEndpointGenerator(appId, SpServiceUrlProvider.DATA_SET)
-          .getEndpointResourceUrl();
-    }
-  }
-
-  private String getConnectMasterSourcesUrl() throws NoServiceEndpointsAvailableException {
-    List<String> connectMasterEndpoints = SpServiceDiscovery.getServiceDiscovery()
-        .getServiceEndpoints(DefaultSpServiceGroups.CORE, true,
-            Collections.singletonList(DefaultSpServiceTags.CONNECT_MASTER.asString()));
-    if (connectMasterEndpoints.size() > 0) {
-      return connectMasterEndpoints.get(0) + GlobalStreamPipesConstants.CONNECT_MASTER_SOURCES_ENDPOINT;
-    } else {
-      throw new NoServiceEndpointsAvailableException("Could not find any available connect master service endpoint");
-    }
   }
 }

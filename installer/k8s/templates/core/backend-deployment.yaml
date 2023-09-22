@@ -35,15 +35,94 @@ spec:
         - name: {{ .Values.streampipes.core.persistence.pvName }}
           persistentVolumeClaim:
             claimName: {{ .Values.streampipes.core.persistence.claimName }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      initContainers:
+        - name: init-wait-consul-couchdb
+          image: alpine
+          command: ["sh", "-c", "for i in $(seq 1 300); do nc -zvw1 {{ .Values.external.consul.service.name }} {{ .Values.external.consul.service.webPort }} && nc -zvw1 {{ .Values.external.couchdb.service.name }} {{ .Values.external.couchdb.service.port }} && exit 0 || sleep 3; done; exit 1"]
       containers:
         - name: {{ .Values.streampipes.core.appName }}
           image: {{ .Values.streampipes.registry }}/backend:{{ .Values.streampipes.version }}
           imagePullPolicy: {{ .Values.pullPolicy }}
           env:
             - name: SP_PRIORITIZED_PROTOCOL
-              value: {{ .Values.preferredBroker }}
+            {{- if eq .Values.preferredBroker "pulsar" }}
+              value: "pulsar"
+            - name: SP_PULSAR_URL
+              value: "pulsar://{{ .Values.external.pulsar.service.name }}:{{ .Values.external.pulsar.service.port }}"
+            {{- end }}
+            {{- if eq .Values.preferredBroker "kafka" }}
+              value: "kafka"
+            - name: SP_KAFKA_HOST
+              value: "{{ .Values.external.kafka.service.name }}"
+            - name: SP_KAFKA_PORT
+              value: "{{ .Values.external.kafka.service.port }}"
+            - name: SP_ZOOKEEPER_HOST
+              value: "{{ .Values.external.zookeeper.service.name }}"
+            - name: SP_ZOOKEEPER_PORT
+              value: "{{ .Values.external.zookeeper.service.port }}"
+            {{- end }}
+            {{- if eq .Values.preferredBroker "nats" }}
+              value: "nats"
+            - name: SP_NATS_HOST
+              value: "{{ .Values.external.nats.service.name }}"
+            - name: SP_NATS_PORT
+              value: "{{ .Values.external.nats.service.port }}"
+            {{- end }}
+            - name: SP_INITIAL_ADMIN_EMAIL
+              value: {{ .Values.streampipes.auth.users.admin.user}}
+            - name: SP_INITIAL_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.streampipes.auth.secretName }}
+                  key: sp-initial-admin-password
+            - name: SP_INITIAL_SERVICE_USER
+              value: "{{ .Values.streampipes.auth.users.service.user }}"
+            - name: SP_INITIAL_SERVICE_USER_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.streampipes.auth.secretName }}
+                  key: sp-initial-client-secret
+            - name: SP_ENCRYPTION_PASSCODE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.streampipes.auth.secretName}}
+                  key: sp-encryption-passcode
+            - name: SP_COUCHDB_USER
+              value: "{{ .Values.external.couchdb.user }}"
+            - name: SP_COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.streampipes.auth.secretName }}
+                  key: sp-couchdb-password
+            - name: SP_TS_STORAGE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.streampipes.auth.secretName }}
+                  key: sp-ts-storage-token
           ports:
             - containerPort: {{ .Values.streampipes.core.port }}
           volumeMounts:
             - mountPath: "/root/.streampipes"
               name: {{ .Values.streampipes.core.persistence.pvName }}
+          readinessProbe:
+            httpGet:
+              path: /streampipes-backend/api/v2/setup/configured
+              port: {{ .Values.streampipes.core.port }}
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            failureThreshold: {{ .Values.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: /streampipes-backend/api/v2/setup/configured
+              port: {{ .Values.streampipes.core.port }}
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            failureThreshold: {{ .Values.failureThreshold }}
+          startupProbe:
+            httpGet:
+              path: /streampipes-backend/api/v2/setup/configured
+              port: {{ .Values.streampipes.core.port }}
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            failureThreshold: {{ .Values.failureThreshold }}

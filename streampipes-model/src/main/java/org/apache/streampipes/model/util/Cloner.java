@@ -18,22 +18,16 @@
 
 package org.apache.streampipes.model.util;
 
-import org.apache.streampipes.model.SpDataSet;
 import org.apache.streampipes.model.SpDataStream;
 import org.apache.streampipes.model.base.NamedStreamPipesEntity;
 import org.apache.streampipes.model.connect.adapter.AdapterDescription;
-import org.apache.streampipes.model.connect.adapter.AdapterSetDescription;
-import org.apache.streampipes.model.connect.adapter.AdapterStreamDescription;
-import org.apache.streampipes.model.connect.adapter.GenericAdapterSetDescription;
-import org.apache.streampipes.model.connect.adapter.GenericAdapterStreamDescription;
-import org.apache.streampipes.model.connect.adapter.SpecificAdapterSetDescription;
-import org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
 import org.apache.streampipes.model.graph.DataProcessorDescription;
 import org.apache.streampipes.model.graph.DataSinkDescription;
 import org.apache.streampipes.model.grounding.JmsTransportProtocol;
 import org.apache.streampipes.model.grounding.KafkaTransportProtocol;
 import org.apache.streampipes.model.grounding.MqttTransportProtocol;
 import org.apache.streampipes.model.grounding.NatsTransportProtocol;
+import org.apache.streampipes.model.grounding.PulsarTransportProtocol;
 import org.apache.streampipes.model.grounding.SimpleTopicDefinition;
 import org.apache.streampipes.model.grounding.TopicDefinition;
 import org.apache.streampipes.model.grounding.TransportFormat;
@@ -172,6 +166,8 @@ public class Cloner {
       return new MqttTransportProtocol((MqttTransportProtocol) protocol);
     } else if (protocol instanceof NatsTransportProtocol) {
       return new NatsTransportProtocol((NatsTransportProtocol) protocol);
+    } else if (protocol instanceof PulsarTransportProtocol) {
+      return new PulsarTransportProtocol((PulsarTransportProtocol) protocol);
     } else {
       logger.error("Could not clone protocol of type {}", protocol.getClass().getCanonicalName());
       return protocol;
@@ -204,20 +200,8 @@ public class Cloner {
     }
   }
 
-  public List<SpDataStream> seq(List<SpDataStream> spDataStreams) {
-    return spDataStreams.stream().map(this::mapSequence).collect(Collectors.toList());
-  }
-
   public List<SpDataStream> streams(List<SpDataStream> spDataStreams) {
-    return spDataStreams.stream().map(this::mapSequence).collect(Collectors.toList());
-  }
-
-  public SpDataStream mapSequence(SpDataStream seq) {
-    if (seq instanceof SpDataSet) {
-      return new SpDataSet((SpDataSet) seq);
-    } else {
-      return new SpDataStream(seq);
-    }
+    return spDataStreams.stream().map(s -> new SpDataStream(s)).collect(Collectors.toList());
   }
 
   public SpDataStream stream(SpDataStream other) {
@@ -294,9 +278,7 @@ public class Cloner {
   }
 
   private NamedStreamPipesEntity cloneDescription(NamedStreamPipesEntity pe) {
-    if (pe instanceof SpDataSet) {
-      return new SpDataSet((SpDataSet) pe);
-    } else if (pe instanceof SpDataStream) {
+    if (pe instanceof SpDataStream) {
       return new SpDataStream((SpDataStream) pe);
     } else if (pe instanceof DataProcessorDescription) {
       return new DataProcessorDescription((DataProcessorDescription) pe);
@@ -316,17 +298,6 @@ public class Cloner {
   }
 
   public AdapterDescription adapterDescription(AdapterDescription ad) {
-    if (ad instanceof GenericAdapterSetDescription) {
-      return new GenericAdapterSetDescription((GenericAdapterSetDescription) ad);
-    } else if (ad instanceof GenericAdapterStreamDescription) {
-      return new GenericAdapterStreamDescription((GenericAdapterStreamDescription) ad);
-    } else if (ad instanceof SpecificAdapterSetDescription) {
-      return new SpecificAdapterSetDescription((AdapterSetDescription) ad);
-    } else if (ad instanceof SpecificAdapterStreamDescription) {
-      return new SpecificAdapterStreamDescription((AdapterStreamDescription) ad);
-    } else {
-      logger.error("Could not clone adapter description of type: " + ad.getClass().getCanonicalName());
-      return ad;
-    }
+    return new AdapterDescription(ad);
   }
 }

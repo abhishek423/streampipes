@@ -1,0 +1,76 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.extensions.iiot.appName }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.extensions.iiot.appName }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.extensions.iiot.appName }}
+    spec:
+      restartPolicy: {{ .Values.restartPolicy }}
+      initContainers:
+        - name: init-wait-{{.Values.streampipes.core.service.name}}
+          image: alpine
+          command: ["sh", "-c", "for i in $(seq 1 300); do nc -zvw1 {{.Values.streampipes.core.service.name}} {{ .Values.streampipes.core.service.port }} && exit 0 || sleep 3; done; exit 1"]
+      containers:
+        - name: extensions-all-iiot
+          image: {{ .Values.streampipes.registry }}/extensions-all-iiot:{{ .Values.streampipes.version }}
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.extensions.iiot.port }}
+          env:
+            - name: SP_CLIENT_USER
+              value: "{{ .Values.streampipes.auth.users.service.user }}"
+            - name: SP_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.streampipes.auth.secretName }}"
+                  key: sp-initial-client-secret
+            - name: SP_COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.streampipes.auth.secretName }}
+                  key: sp-couchdb-password
+            - name: SP_TS_STORAGE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.streampipes.auth.secretName }}"
+                  key: sp-ts-storage-token
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.extensions.iiot.port }}
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            failureThreshold: {{ .Values.failureThreshold }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.extensions.iiot.port }}
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            failureThreshold: {{ .Values.failureThreshold }}
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.extensions.iiot.port }}
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+            periodSeconds: {{ .Values.periodSeconds }}
+            failureThreshold: {{ .Values.failureThreshold }}

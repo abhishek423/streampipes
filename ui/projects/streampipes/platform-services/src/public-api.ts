@@ -33,6 +33,7 @@ export * from './lib/apis/files.service';
 export * from './lib/apis/functions.service';
 export * from './lib/apis/general-config.service';
 export * from './lib/apis/generic-storage.service';
+export * from './lib/apis/labels.service';
 export * from './lib/apis/mail-config.service';
 export * from './lib/apis/measurement-units.service';
 export * from './lib/apis/permissions.service';
@@ -45,6 +46,7 @@ export * from './lib/apis/pipeline-monitoring.service';
 export * from './lib/apis/pipeline-template.service';
 export * from './lib/apis/semantic-types.service';
 export * from './lib/apis/user.service';
+export * from './lib/apis/user-admin.service';
 export * from './lib/apis/user-group.service';
 export * from './lib/apis/shared-dashboard.service';
 
@@ -63,3 +65,4 @@ export * from './lib/query/data-view-query-generator.service';
 export * from './lib/model/user/user.model';
 
 export * from './lib/model/assets/asset.model';
+export * from './lib/model/labels/labels.model';

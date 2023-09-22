@@ -17,11 +17,12 @@
  */
 package org.apache.streampipes.client.http;
 
+import org.apache.streampipes.client.api.config.ClientConnectionUrlResolver;
 import org.apache.streampipes.client.http.header.Headers;
-import org.apache.streampipes.client.model.ClientConnectionUrlResolver;
 import org.apache.streampipes.client.model.StreamPipesClientConfig;
 import org.apache.streampipes.client.serializer.Serializer;
 import org.apache.streampipes.client.util.StreamPipesApiPath;
+import org.apache.streampipes.commons.exceptions.SpHttpErrorStatusCode;
 import org.apache.streampipes.commons.exceptions.SpRuntimeException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,17 +98,20 @@ public abstract class HttpRequest<K, V, T> {
     try {
       HttpResponse response = request.execute().returnResponse();
       StatusLine status = response.getStatusLine();
-      if (status.getStatusCode() == HttpStatus.SC_OK) {
+      if (status.getStatusCode() == HttpStatus.SC_OK || status.getStatusCode() == HttpStatus.SC_CREATED) {
         return afterRequest(serializer, response.getEntity());
       } else {
-        if (status.getStatusCode() == 401) {
-          throw new SpRuntimeException(
-              " 401 - Access to this resource is forbidden - did you provide a poper API key or client secret?");
-        } else {
-          throw new SpRuntimeException(status.getStatusCode() + " - " + status.getReasonPhrase());
+        switch (status.getStatusCode()) {
+          case HttpStatus.SC_UNAUTHORIZED -> throw new SpHttpErrorStatusCode(
+              " 401 - Access to this resource is forbidden - did you provide a poper API key or client secret?",
+              401);
+          case HttpStatus.SC_NOT_FOUND ->
+              throw new SpHttpErrorStatusCode(" 404 - The requested resource could not be found.", 404);
+          default -> throw new SpHttpErrorStatusCode(status.getStatusCode() + " - " + status.getReasonPhrase(),
+              status.getStatusCode());
         }
       }
-    } catch (IOException | SpRuntimeException e) {
+    } catch (IOException e) {
       throw new SpRuntimeException(
           "Could not connect to the StreamPipes API - please check that StreamPipes is available", e);
     }

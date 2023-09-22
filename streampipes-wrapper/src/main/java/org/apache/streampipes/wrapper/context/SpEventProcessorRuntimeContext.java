@@ -17,46 +17,21 @@
  */
 package org.apache.streampipes.wrapper.context;
 
-import org.apache.streampipes.client.StreamPipesClient;
-import org.apache.streampipes.extensions.management.config.ConfigExtractor;
-import org.apache.streampipes.extensions.management.monitoring.SpMonitoringManager;
-import org.apache.streampipes.model.runtime.SchemaInfo;
-import org.apache.streampipes.model.runtime.SourceInfo;
+import org.apache.streampipes.client.api.IStreamPipesClient;
+import org.apache.streampipes.extensions.api.config.IConfigExtractor;
+import org.apache.streampipes.extensions.api.monitoring.IExtensionsLogger;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class SpEventProcessorRuntimeContext extends SpRuntimeContext implements
     EventProcessorRuntimeContext, Serializable {
 
-  private SchemaInfo outputSchemaInfo;
-  private SourceInfo outputSourceInfo;
 
-  public SpEventProcessorRuntimeContext(List<SourceInfo> inputSourceInfo,
-                                        List<SchemaInfo> inputSchemaInfo,
-                                        SourceInfo outputSourceInfo,
-                                        SchemaInfo outputSchemaInfo,
-                                        String correspondingUser,
-                                        ConfigExtractor configExtractor,
-                                        StreamPipesClient streamPipesClient,
-                                        SpMonitoringManager logManager) {
-    super(inputSourceInfo, inputSchemaInfo, correspondingUser, configExtractor, streamPipesClient, logManager);
-    this.outputSchemaInfo = outputSchemaInfo;
-    this.outputSourceInfo = outputSourceInfo;
+  public SpEventProcessorRuntimeContext(String correspondingUser,
+                                        IConfigExtractor configExtractor,
+                                        IStreamPipesClient streamPipesClient,
+                                        IExtensionsLogger extensionsLogger) {
+    super(correspondingUser, configExtractor, streamPipesClient, extensionsLogger);
   }
-
-  public SpEventProcessorRuntimeContext() {
-    super();
-  }
-
-  @Override
-  public SchemaInfo getOutputSchemaInfo() {
-    return outputSchemaInfo;
-  }
-
-  @Override
-  public SourceInfo getOutputSourceInfo() {
-    return outputSourceInfo;
-  }
-
 }

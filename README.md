@@ -19,14 +19,16 @@
 [![Github Actions](https://img.shields.io/github/actions/workflow/status/apache/streampipes/build.yml)](https://github.com/apache/streampipes/actions/)
 [![Docker pulls](https://img.shields.io/docker/pulls/apachestreampipes/backend.svg)](https://hub.docker.com/r/apachestreampipes/backend/)
 ![](https://img.shields.io/badge/java--version-17-blue.svg)
-[![Maven central](https://img.shields.io/maven-central/v/org.apache.streampipes/streampipes-backend.svg)](https://img.shields.io/maven-central/v/org.apache.streampipes/streampipes-backend.svg)
+[![Maven central](https://img.shields.io/maven-central/v/org.apache.streampipes/streampipes-service-core.svg)](https://img.shields.io/maven-central/v/org.apache.streampipes/streampipes-service-core.svg)
 [![License](https://img.shields.io/github/license/apache/streampipes.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Last commit](https://img.shields.io/github/last-commit/apache/streampipes.svg)]()
-[![Twitter](https://img.shields.io/twitter/follow/StreamPipes.svg?label=Follow&style=social)](https://twitter.com/StreamPipes)
 [![Apache StreamPipes](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/q1jdu2&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/q1jdu2/runs)
 [![Contributors](https://img.shields.io/github/contributors/apache/streampipes)](https://github.com/apache/streampipes/graphs/contributors)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/apache/streampipes)
 [![GitHub issues by-label](https://img.shields.io/github/issues/apache/streampipes/good%20first%20issue)](https://github.com/apache/streampipes/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+<br>
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/company/apache-streampipes)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/StreamPipes)
 
 <h1 align="center">
   <br>
@@ -116,21 +118,20 @@ The quickest way to run StreamPipes including the latest extensions (adapters, p
 
 Please follow the instructions provided in the corresponding `README.md` to get started.
 
-For a more in-depth manual, read the [installation guide](https://streampipes.apache.org/docs/docs/try-installation.html).
+For a more in-depth manual, read the [installation guide](https://streampipes.apache.org/docs/try-installation.html).
 
 > TL;DR: Download the latest release, switch to the ``installer/compose`` directory and run ``docker-compose up -d``.
 
 ## Documentation
 
-The full documentation is available [here](https://streampipes.apache.org/docs/index.html).
+The full documentation is available [here](https://streampipes.apache.org/docs/user-guide-introduction).
 
 Quick Links:
 
-* [Installation](https://streampipes.apache.org/docs/docs/try-installation.html)
-* [Create adapters](https://streampipes.apache.org/docs/docs/use-connect.html)
-* [Create pipelines](https://streampipes.apache.org/docs/docs/use-pipeline-editor.html)
-* [Pipeline elements](https://streampipes.apache.org/pipeline-elements.html)
-* [Write you own pipeline elements](https://streampipes.apache.org/docs/docs/extend-archetypes.html)
+* [Installation](https://streampipes.apache.org/docs/try-installation.html)
+* [Create adapters](https://streampipes.apache.org/docs/use-connect.html)
+* [Create pipelines](https://streampipes.apache.org/docs/use-pipeline-editor.html)
+* [Write you own pipeline elements](https://streampipes.apache.org/docs/extend-archetypes.html)
 
 ## Building StreamPipes
 
@@ -172,10 +173,10 @@ The source code of all included pipeline elements and adapters can be found [her
 
 ## Extending StreamPipes
 
-You can easily add your own data streams, processors or sinks. A [Java-based SDK](https://streampipes.apache.org/docs/docs/extend-tutorial-data-processors.html) can be used to integrate your existing processing logic into StreamPipes. 
+You can easily add your own data streams, processors or sinks. A [Java-based SDK](https://streampipes.apache.org/docs/extend-tutorial-data-processors.html) can be used to integrate your existing processing logic into StreamPipes. 
 Pipeline elements are packaged as Docker images and can be installed at runtime, whenever your requirements change.
 
-👉 Check our [developer guide](https://streampipes.apache.org/docs/docs/extend-setup.html).
+👉 Check our [developer guide](https://streampipes.apache.org/docs/extend-setup.html).
 
 ## Bugs and Feature Requests
 

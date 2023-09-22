@@ -22,10 +22,7 @@
     style="width: 250px"
     [attr.data-cy]="'sp-pipeline-element-selection'"
 >
-    <div
-        class="editorIconStandOptions sp-bg-lightgray page-container-nav"
-        style="padding: 0px"
-    >
+    <div class="editorIconStandOptions page-container-nav" style="padding: 0px">
         <div
             fxFlex="100"
             fxLayout="row"
@@ -33,33 +30,33 @@
             style="padding-left: 5px"
         >
             <div fxLayout="row" fxLayoutAlign="start center" fxFlex="100">
-                <i class="material-icons sp-accent">search</i>
-                <mat-form-field
-                    floatLabel="never"
-                    color="accent"
-                    class="search-field"
-                >
-                    <mat-label>Find element</mat-label>
-                    <input
-                        matInput
-                        type="text"
-                        (keyup)="makeDraggable()"
-                        placeholder="Find element"
-                        [(ngModel)]="elementFilter"
-                    />
-                    <button
-                        *ngIf="elementFilter"
-                        matSuffix
-                        mat-icon-button
-                        aria-label="Find element"
-                        (click)="clearInput()"
+                <div class="form-field-small">
+                    <mat-form-field
+                        color="accent"
+                        class="search-field"
+                        appearance="outline"
                     >
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field>
+                        <input
+                            matInput
+                            type="text"
+                            (keyup)="makeDraggable()"
+                            placeholder="Find element"
+                            [(ngModel)]="elementFilter"
+                        />
+                        <mat-icon matPrefix color="accent">search</mat-icon>
+                        <button
+                            *ngIf="elementFilter"
+                            matSuffix
+                            mat-icon-button
+                            aria-label="Find element"
+                            (click)="clearInput()"
+                        >
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
                 <span fxFlex></span>
                 <button
-                    mat-button
                     mat-icon-button
                     color="accent"
                     (click)="startCreatePipelineTour()"
@@ -157,9 +154,8 @@
                             fxFlex="100"
                             *ngFor="
                                 let element of allElements
-                                    | pipelineElementType
-                                        : availableType.filters
-                                    | pipelineElementName : elementFilter
+                                    | pipelineElementType: availableType.filters
+                                    | pipelineElementName: elementFilter
                             "
                             class="pe-row"
                         >
@@ -196,8 +192,8 @@
                                     let element of allElements
                                         | pipelineElementType
                                             : availableType.filters
-                                        | pipelineElementName : elementFilter
-                                        | pipelineElementGroup : category
+                                        | pipelineElementName: elementFilter
+                                        | pipelineElementGroup: category
                                 "
                                 class="pe-row"
                             >

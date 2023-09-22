@@ -19,7 +19,7 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule } from '@ngbracket/ngx-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -96,7 +96,6 @@ import { WidgetDirective } from './components/widget/widget.directive';
 import { CorrelationWidgetConfigComponent } from './components/widgets/correlation-chart/config/correlation-chart-widget-config.component';
 import { TimeSelectionService } from './services/time-selection.service';
 import { TooMuchDataComponent } from './components/widgets/utils/too-much-data/too-much-data.component';
-import { SpValueHeatmapComponent } from './components/widgets/distribution-chart/value-heatmap/value-heatmap.component';
 import { RouterModule } from '@angular/router';
 import { DataExplorerDashboardSlideViewComponent } from './components/widget-view/slide-view/data-explorer-dashboard-slide-view.component';
 import { SharedUiModule } from '@streampipes/shared-ui';
@@ -110,7 +109,7 @@ export const MY_NATIVE_FORMATS = {
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
-        hour12: false,
+        hourCycle: 'h23',
     },
     datePickerInput: {
         year: 'numeric',
@@ -210,7 +209,6 @@ export const MY_NATIVE_FORMATS = {
         SelectPropertiesComponent,
         SelectColorPropertiesComponent,
         SelectPropertyComponent,
-        SpValueHeatmapComponent,
         TableWidgetComponent,
         TableWidgetConfigComponent,
         MapWidgetConfigComponent,

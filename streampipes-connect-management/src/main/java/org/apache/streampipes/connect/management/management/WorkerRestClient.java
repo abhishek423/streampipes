@@ -19,11 +19,10 @@
 package org.apache.streampipes.connect.management.management;
 
 import org.apache.streampipes.commons.exceptions.SpConfigurationException;
+import org.apache.streampipes.commons.exceptions.connect.AdapterException;
 import org.apache.streampipes.connect.management.util.WorkerPaths;
-import org.apache.streampipes.extensions.api.connect.exception.AdapterException;
+import org.apache.streampipes.manager.execution.ExtensionServiceExecutions;
 import org.apache.streampipes.model.connect.adapter.AdapterDescription;
-import org.apache.streampipes.model.connect.adapter.AdapterSetDescription;
-import org.apache.streampipes.model.connect.adapter.AdapterStreamDescription;
 import org.apache.streampipes.model.runtime.RuntimeOptionsRequest;
 import org.apache.streampipes.model.runtime.RuntimeOptionsResponse;
 import org.apache.streampipes.model.util.Cloner;
@@ -37,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,45 +52,29 @@ public class WorkerRestClient {
 
   public static void invokeStreamAdapter(String endpointUrl,
                                          String elementId) throws AdapterException {
-    AdapterStreamDescription adapterStreamDescription = (AdapterStreamDescription) getAndDecryptAdapter(elementId);
-    String url = endpointUrl + WorkerPaths.getStreamInvokePath();
+    var adapterStreamDescription = getAndDecryptAdapter(elementId);
+    var url = endpointUrl + WorkerPaths.getStreamInvokePath();
 
     startAdapter(url, adapterStreamDescription);
     updateStreamAdapterStatus(adapterStreamDescription.getElementId(), true);
   }
 
   public static void stopStreamAdapter(String baseUrl,
-                                       AdapterStreamDescription adapterStreamDescription) throws AdapterException {
+                                       AdapterDescription adapterStreamDescription) throws AdapterException {
     String url = baseUrl + WorkerPaths.getStreamStopPath();
 
-    AdapterDescription ad =
+    var ad =
         getAdapterDescriptionById(new AdapterInstanceStorageImpl(), adapterStreamDescription.getElementId());
 
     stopAdapter(ad, url);
     updateStreamAdapterStatus(adapterStreamDescription.getElementId(), false);
   }
 
-  public static void invokeSetAdapter(String endpointUrl,
-                                      AdapterSetDescription adapterSetDescription) throws AdapterException {
-    String url = endpointUrl + WorkerPaths.getSetInvokePath();
-
-    startAdapter(url, adapterSetDescription);
-  }
-
-  public static void stopSetAdapter(String baseUrl,
-                                    AdapterSetDescription adapterSetDescription) throws AdapterException {
-    String url = baseUrl + WorkerPaths.getSetStopPath();
-
-    stopAdapter(adapterSetDescription, url);
-  }
-
   public static List<AdapterDescription> getAllRunningAdapterInstanceDescriptions(String url) throws AdapterException {
     try {
       logger.info("Requesting all running adapter description instances: " + url);
-
-      String responseString = Request.Get(url)
-          .connectTimeout(1000)
-          .socketTimeout(100000)
+      var responseString = ExtensionServiceExecutions
+          .extServiceGetRequest(url)
           .execute().returnContent().asString();
 
       List<AdapterDescription> result = JacksonSerializer.getObjectMapper().readValue(responseString, List.class);
@@ -124,7 +106,7 @@ public class WorkerRestClient {
     try {
       String adapterDescription = JacksonSerializer.getObjectMapper().writeValueAsString(ad);
 
-      var response = triggerPost(url, adapterDescription);
+      var response = triggerPost(url, ad.getElementId(), adapterDescription);
       var responseString = getResponseBody(response);
 
       if (response.getStatusLine().getStatusCode() != 200) {
@@ -132,7 +114,7 @@ public class WorkerRestClient {
         throw new AdapterException(exception.getMessage(), exception.getCause());
       }
 
-      logger.info("Adapter {} on endpoint: " + url + " with Response: " + responseString);
+      logger.info("Adapter {} on endpoint: " + url + " with Response: ", ad.getName() + responseString);
 
     } catch (IOException e) {
       logger.error("Adapter was not {} successfully", action, e);
@@ -145,12 +127,10 @@ public class WorkerRestClient {
   }
 
   private static HttpResponse triggerPost(String url,
+                                          String elementId,
                                           String payload) throws IOException {
-    return Request.Post(url)
-        .bodyString(payload, ContentType.APPLICATION_JSON)
-        .connectTimeout(1000)
-        .socketTimeout(100000)
-        .execute().returnResponse();
+    var request = ExtensionServiceExecutions.extServicePostRequest(url, elementId, payload);
+    return request.execute().returnResponse();
   }
 
   public static RuntimeOptionsResponse getConfiguration(String workerEndpoint,
@@ -161,10 +141,7 @@ public class WorkerRestClient {
 
     try {
       String payload = JacksonSerializer.getObjectMapper().writeValueAsString(runtimeOptionsRequest);
-      var response = Request.Post(url)
-          .bodyString(payload, ContentType.APPLICATION_JSON)
-          .connectTimeout(1000)
-          .socketTimeout(100000)
+      var response = ExtensionServiceExecutions.extServicePostRequest(url, payload)
           .execute()
           .returnResponse();
 
@@ -242,7 +219,7 @@ public class WorkerRestClient {
 
   private static void updateStreamAdapterStatus(String adapterId,
                                                 boolean running) {
-    AdapterStreamDescription adapter = (AdapterStreamDescription) getAndDecryptAdapter(adapterId);
+    var adapter = getAndDecryptAdapter(adapterId);
     adapter.setRunning(running);
     encryptAndUpdateAdapter(adapter);
   }

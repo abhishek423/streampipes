@@ -23,7 +23,7 @@ The StreamPipes command-line interface (CLI) is focused on developers in order t
 * new core features for **backend** and **ui**.
 
 <!-- BEGIN do not edit: set via ../upgrade_versions.sh -->
-**Current version:** 0.92.0-SNAPSHOT
+**Current version:** 0.93.0-SNAPSHOT
 <!-- END do not edit -->
 
 ## TL;DR
@@ -36,7 +36,7 @@ pipeline-element
 streampipes env --set pipeline-element
 streampipes up -d
 ```
-> **NOTE**: use `./streampipes` if you haven't add it to the PATH and sourced it (see section "Run `streampipes` from anywhere?").
+> **NOTE**: use `./installer/cli/streampipes` if you haven't add it to the PATH and sourced it (see section "Run `streampipes` from anywhere?").
 
 ## Prerequisite
 The CLI is basically a wrapper around multiple `docker` and `docker-compose` commands plus some additional sugar.
@@ -47,9 +47,9 @@ The CLI is basically a wrapper around multiple `docker` and `docker-compose` com
 * For Windows Developer: GitBash only
 
 
-Tested on: **macOS**, **Linux**, **Windows***)
+Tested on: (***macOS**, **Linux**, **Windows***)
 
-> **NOTE**: *) If you're using Windows the CLI only works in combination with GitBash - CMD, PowerShell won't work.
+> **NOTE**: If you're using Windows the CLI only works in combination with GitBash - CMD, PowerShell won't work.
 
 
 ## CLI commands overview
@@ -249,7 +249,7 @@ For **macOS**, or **Linux**:
 export PATH="/path/to/streampipes-installer/cli:$PATH"
 ```
 
-For **Windows 10**, e.g. check this [documentation](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/).
+For **Windows 10** add `installer\cli` to environment variables, e.g. check this [documentation](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/).
 
 
 ## Upgrade to new version

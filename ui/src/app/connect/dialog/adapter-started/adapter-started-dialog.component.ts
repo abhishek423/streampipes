@@ -20,15 +20,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ShepherdService } from '../../../services/tour/shepherd.service';
 import { RestService } from '../../services/rest.service';
 import {
-    AdapterDescriptionUnion,
-    GenericAdapterSetDescription,
+    AdapterDescription,
+    ErrorMessage,
     Message,
     PipelineOperationStatus,
     PipelineTemplateService,
     SpDataStream,
-    GenericAdapterStreamDescription,
-    SpecificAdapterStreamDescription,
-    SpecificAdapterSetDescription,
 } from '@streampipes/platform-services';
 import { DialogRef } from '@streampipes/shared-ui';
 import { PipelineInvocationBuilder } from '../../../core-services/template/PipelineInvocationBuilder';
@@ -44,15 +41,14 @@ export class AdapterStartedDialog implements OnInit {
     public adapterStatus: Message;
     public streamDescription: SpDataStream;
     pollingActive = false;
-    public isSetAdapter = false;
     public pipelineOperationStatus: PipelineOperationStatus;
 
     adapterSuccessfullyEdited = false;
 
     /**
-     * AdapterDescriptionUnion that should be persisted and started
+     * AdapterDescription that should be persisted and started
      */
-    @Input() adapter: AdapterDescriptionUnion;
+    @Input() adapter: AdapterDescription;
 
     /**
      * Indicates if a pipeline to store the adapter events should be started
@@ -65,7 +61,7 @@ export class AdapterStartedDialog implements OnInit {
     @Input() dataLakeTimestampField: string;
 
     /**
-     * When true a user edited an existing AdapterDescriptionUnion
+     * When true a user edited an existing AdapterDescription
      */
     @Input() editMode = false;
 
@@ -73,6 +69,8 @@ export class AdapterStartedDialog implements OnInit {
      * This option will immediately start the adapter, when false it the adapter is only created and not started
      */
     @Input() startAdapterNow = true;
+
+    templateErrorMessage: ErrorMessage;
 
     constructor(
         public dialogRef: DialogRef<AdapterStartedDialog>,
@@ -114,10 +112,7 @@ export class AdapterStartedDialog implements OnInit {
     }
 
     startAdapter(status: Message, adapterElementId: string) {
-        const isStreamAdapter =
-            this.adapter instanceof GenericAdapterStreamDescription ||
-            this.adapter instanceof SpecificAdapterStreamDescription;
-        if (this.startAdapterNow && isStreamAdapter) {
+        if (this.startAdapterNow) {
             this.adapterService
                 .startAdapterByElementId(adapterElementId)
                 .subscribe(startStatus => {
@@ -131,15 +126,7 @@ export class AdapterStartedDialog implements OnInit {
     showAdapterPreview(status: Message, adapterElementId: string) {
         // Start preview on streams and message for sets
         if (status.success) {
-            if (
-                this.adapter instanceof GenericAdapterSetDescription ||
-                this.adapter instanceof SpecificAdapterSetDescription
-            ) {
-                this.isSetAdapter = true;
-            } else {
-                this.getLiveViewPreview(adapterElementId);
-            }
-
+            this.getLiveViewPreview(adapterElementId);
             this.adapterInstalled = true;
         }
     }
@@ -173,31 +160,41 @@ export class AdapterStartedDialog implements OnInit {
                     adapter.correspondingDataStreamElementId,
                     pipelineId,
                 )
-                .subscribe(res => {
-                    const pipelineName = 'Persist ' + this.adapter.name;
+                .subscribe(
+                    res => {
+                        const pipelineName = 'Persist ' + this.adapter.name;
 
-                    const indexName = this.adapter.name;
+                        const indexName = this.adapter.name;
 
-                    const pipelineInvocation = PipelineInvocationBuilder.create(
-                        res,
-                    )
-                        .setName(pipelineName)
-                        .setTemplateId(pipelineId)
-                        .setFreeTextStaticProperty('db_measurement', indexName)
-                        .setMappingPropertyUnary(
-                            'timestamp_mapping',
-                            's0::' + this.dataLakeTimestampField,
-                        )
-                        .build();
+                        const pipelineInvocation =
+                            PipelineInvocationBuilder.create(res)
+                                .setName(pipelineName)
+                                .setTemplateId(pipelineId)
+                                .setFreeTextStaticProperty(
+                                    'db_measurement',
+                                    indexName,
+                                )
+                                .setMappingPropertyUnary(
+                                    'timestamp_mapping',
+                                    's0::' + this.dataLakeTimestampField,
+                                )
+                                .build();
 
-                    this.pipelineTemplateService
-                        .createPipelineTemplateInvocation(pipelineInvocation)
-                        .subscribe(pipelineOperationStatus => {
-                            this.pipelineOperationStatus =
-                                pipelineOperationStatus;
-                            this.startAdapter(message, adapterElementId);
-                        });
-                });
+                        this.pipelineTemplateService
+                            .createPipelineTemplateInvocation(
+                                pipelineInvocation,
+                            )
+                            .subscribe(pipelineOperationStatus => {
+                                this.pipelineOperationStatus =
+                                    pipelineOperationStatus;
+                                this.startAdapter(message, adapterElementId);
+                            });
+                    },
+                    res => {
+                        this.templateErrorMessage = res.error;
+                        this.startAdapter(message, adapterElementId);
+                    },
+                );
         });
     }
 }

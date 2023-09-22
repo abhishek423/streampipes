@@ -30,6 +30,7 @@ import org.apache.streampipes.messaging.jms.SpJmsProtocolFactory;
 import org.apache.streampipes.messaging.kafka.SpKafkaProtocolFactory;
 import org.apache.streampipes.messaging.mqtt.SpMqttProtocolFactory;
 import org.apache.streampipes.messaging.nats.SpNatsProtocolFactory;
+import org.apache.streampipes.messaging.pulsar.SpPulsarProtocolFactory;
 import org.apache.streampipes.processors.changedetection.jvm.ChangeDetectionJvmInit;
 import org.apache.streampipes.processors.enricher.jvm.EnricherJvmInit;
 import org.apache.streampipes.processors.filters.jvm.FiltersJvmInit;
@@ -40,6 +41,7 @@ import org.apache.streampipes.sinks.brokers.jvm.BrokersJvmInit;
 import org.apache.streampipes.sinks.databases.jvm.DatabasesJvmInit;
 import org.apache.streampipes.sinks.internal.jvm.SinksInternalJvmInit;
 import org.apache.streampipes.sinks.notifications.jvm.SinksNotificationsJvmInit;
+import org.apache.streampipes.wrapper.standalone.runtime.StandaloneStreamPipesRuntimeProvider;
 
 public class AllExtensionsIIoTInit extends ExtensionsModelSubmitter {
 
@@ -63,6 +65,7 @@ public class AllExtensionsIIoTInit extends ExtensionsModelSubmitter {
         .merge(new DatabasesJvmInit().provideServiceDefinition())
         .merge(new SinksNotificationsJvmInit().provideServiceDefinition())
         .merge(new InfluxConnectorsInit().provideServiceDefinition())
+        .registerRuntimeProvider(new StandaloneStreamPipesRuntimeProvider())
         .registerMessagingFormats(
             new JsonDataFormatFactory(),
             new CborDataFormatFactory(),
@@ -72,7 +75,8 @@ public class AllExtensionsIIoTInit extends ExtensionsModelSubmitter {
             new SpKafkaProtocolFactory(),
             new SpJmsProtocolFactory(),
             new SpMqttProtocolFactory(),
-            new SpNatsProtocolFactory())
+            new SpNatsProtocolFactory(),
+            new SpPulsarProtocolFactory())
         .build();
   }
 }

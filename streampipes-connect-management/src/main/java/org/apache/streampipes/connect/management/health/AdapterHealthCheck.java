@@ -18,14 +18,16 @@
 
 package org.apache.streampipes.connect.management.health;
 
+import org.apache.streampipes.commons.exceptions.connect.AdapterException;
 import org.apache.streampipes.connect.management.management.AdapterMasterManagement;
 import org.apache.streampipes.connect.management.management.WorkerRestClient;
 import org.apache.streampipes.connect.management.util.WorkerPaths;
-import org.apache.streampipes.extensions.api.connect.exception.AdapterException;
 import org.apache.streampipes.model.connect.adapter.AdapterDescription;
-import org.apache.streampipes.model.connect.adapter.AdapterStreamDescription;
 import org.apache.streampipes.storage.api.IAdapterStorage;
 import org.apache.streampipes.storage.couchdb.CouchDbStorageManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 
 public class AdapterHealthCheck {
+
+  private static final Logger LOG = LoggerFactory.getLogger(AdapterHealthCheck.class);
 
   private final IAdapterStorage adapterStorage;
   private final AdapterMasterManagement adapterMasterManagement;
@@ -122,13 +126,11 @@ public class AdapterHealthCheck {
     for (AdapterDescription adapterDescription : adaptersToRecover.values()) {
       // Invoke all adapters that were running when the adapter container was stopped
       try {
-        if (adapterDescription instanceof AdapterStreamDescription) {
-          if (((AdapterStreamDescription) adapterDescription).isRunning()) {
-            this.adapterMasterManagement.startStreamAdapter(adapterDescription.getElementId());
-          }
+        if (adapterDescription.isRunning()) {
+          this.adapterMasterManagement.startStreamAdapter(adapterDescription.getElementId());
         }
       } catch (AdapterException e) {
-        e.printStackTrace();
+        LOG.warn("Could not start adapter {}", adapterDescription.getName(), e);
       }
     }
 

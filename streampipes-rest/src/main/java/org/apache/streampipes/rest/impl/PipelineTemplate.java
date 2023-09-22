@@ -18,9 +18,9 @@
 package org.apache.streampipes.rest.impl;
 
 import org.apache.streampipes.manager.operations.Operations;
-import org.apache.streampipes.model.SpDataSet;
 import org.apache.streampipes.model.SpDataStream;
 import org.apache.streampipes.model.SpDataStreamContainer;
+import org.apache.streampipes.model.message.Notifications;
 import org.apache.streampipes.model.pipeline.PipelineOperationStatus;
 import org.apache.streampipes.model.template.PipelineTemplateDescription;
 import org.apache.streampipes.model.template.PipelineTemplateInvocation;
@@ -36,6 +36,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Path("/v2/pipeline-templates")
 public class PipelineTemplate extends AbstractAuthGuardedRestResource {
@@ -48,28 +49,10 @@ public class PipelineTemplate extends AbstractAuthGuardedRestResource {
     List<SpDataStream> datasets = new ArrayList<>();
 
     sources.stream()
-        .filter(stream -> !(stream instanceof SpDataSet))
         .map(SpDataStream::new)
         .forEach(datasets::add);
 
     return ok((new SpDataStreamContainer(datasets)));
-  }
-
-  @GET
-  @Path("/sets")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getAvailableDataSets() {
-
-    List<SpDataStream> sources = getPipelineElementRdfStorage().getAllDataStreams();
-    List<SpDataStream> datasets = new ArrayList<>();
-
-    sources
-        .stream()
-        .filter(stream -> stream instanceof SpDataSet)
-        .map(stream -> new SpDataSet((SpDataSet) stream))
-        .forEach(datasets::add);
-
-    return ok(new SpDataStreamContainer(datasets));
   }
 
   @GET
@@ -79,11 +62,19 @@ public class PipelineTemplate extends AbstractAuthGuardedRestResource {
                                                 @QueryParam("templateId") String pipelineTemplateId) {
     if (pipelineTemplateId != null) {
       SpDataStream dataStream = getDataStream(streamId);
-      PipelineTemplateDescription pipelineTemplateDescription = getPipelineTemplateDescription(pipelineTemplateId);
-      PipelineTemplateInvocation invocation =
-          Operations.getPipelineInvocationTemplate(dataStream, pipelineTemplateDescription);
-      PipelineTemplateInvocation clonedInvocation = new PipelineTemplateInvocation(invocation);
-      return ok(new PipelineTemplateInvocation(clonedInvocation));
+      var pipelineTemplateDescriptionOpt = getPipelineTemplateDescription(pipelineTemplateId);
+      if (pipelineTemplateDescriptionOpt.isPresent()) {
+        PipelineTemplateInvocation invocation =
+            Operations.getPipelineInvocationTemplate(dataStream, pipelineTemplateDescriptionOpt.get());
+        PipelineTemplateInvocation clonedInvocation = new PipelineTemplateInvocation(invocation);
+        return ok(new PipelineTemplateInvocation(clonedInvocation));
+      } else {
+        return badRequest(Notifications.error(
+            String.format(
+                "Could not create pipeline template %s - did you install all pipeline elements?",
+                pipelineTemplateId.substring(pipelineTemplateId.lastIndexOf(".") + 1))
+        ));
+      }
     } else {
       return fail();
     }
@@ -101,13 +92,12 @@ public class PipelineTemplate extends AbstractAuthGuardedRestResource {
   }
 
 
-  private PipelineTemplateDescription getPipelineTemplateDescription(String pipelineTemplateId) {
+  private Optional<PipelineTemplateDescription> getPipelineTemplateDescription(String pipelineTemplateId) {
     return Operations
         .getAllPipelineTemplates()
         .stream()
         .filter(pt -> pt.getAppId().equals(pipelineTemplateId))
-        .findFirst()
-        .get();
+        .findFirst();
   }
 
   private List<SpDataStream> getAllDataStreams() {

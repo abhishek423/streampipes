@@ -1,40 +1,33 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 /* tslint:disable */
 /* eslint-disable */
 // @ts-nocheck
-// Generated using typescript-generator version 3.1.1185 on 2023-01-08 16:02:05.
+// Generated using typescript-generator version 3.1.1185 on 2023-08-06 11:37:37.
 
 export class NamedStreamPipesEntity {
     '@class':
         | 'org.apache.streampipes.model.connect.adapter.AdapterDescription'
-        | 'org.apache.streampipes.model.connect.adapter.AdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.GenericAdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.SpecificAdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.AdapterStreamDescription'
-        | 'org.apache.streampipes.model.connect.adapter.GenericAdapterStreamDescription'
-        | 'org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription'
         | 'org.apache.streampipes.model.connect.grounding.ProtocolDescription'
         | 'org.apache.streampipes.model.template.PipelineTemplateDescription'
         | 'org.apache.streampipes.model.SpDataStream'
-        | 'org.apache.streampipes.model.SpDataSet'
-        | 'org.apache.streampipes.model.connect.grounding.FormatDescription'
         | 'org.apache.streampipes.model.base.InvocableStreamPipesEntity'
         | 'org.apache.streampipes.model.graph.DataProcessorInvocation'
         | 'org.apache.streampipes.model.graph.DataSinkInvocation';
@@ -90,15 +83,7 @@ export class NamedStreamPipesEntity {
 }
 
 export class AdapterDescription extends NamedStreamPipesEntity {
-    '@class':
-        | 'org.apache.streampipes.model.connect.adapter.AdapterDescription'
-        | 'org.apache.streampipes.model.connect.adapter.AdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.GenericAdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.SpecificAdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.AdapterStreamDescription'
-        | 'org.apache.streampipes.model.connect.adapter.GenericAdapterStreamDescription'
-        | 'org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription';
-    'adapterType': string;
+    '@class': 'org.apache.streampipes.model.connect.adapter.AdapterDescription';
     'category': string[];
     'config': StaticPropertyUnion[];
     'correspondingDataStreamElementId': string;
@@ -107,9 +92,12 @@ export class AdapterDescription extends NamedStreamPipesEntity {
      */
     'correspondingServiceGroup': string;
     'createdAt': number;
+    'dataStream': SpDataStream;
     'eventGrounding': EventGrounding;
+    'eventSchema': EventSchema;
     'icon': string;
     'rules': TransformationRuleDescriptionUnion[];
+    'running': boolean;
     'schemaRules': TransformationRuleDescriptionUnion[];
     'selectedEndpointUrl': string;
     'streamRules': TransformationRuleDescriptionUnion[];
@@ -124,7 +112,6 @@ export class AdapterDescription extends NamedStreamPipesEntity {
         }
         const instance = target || new AdapterDescription();
         super.fromData(data, instance);
-        instance.adapterType = data.adapterType;
         instance.category = __getCopyArrayFn(__identity<string>())(
             data.category,
         );
@@ -135,11 +122,14 @@ export class AdapterDescription extends NamedStreamPipesEntity {
             data.correspondingDataStreamElementId;
         instance.correspondingServiceGroup = data.correspondingServiceGroup;
         instance.createdAt = data.createdAt;
+        instance.dataStream = SpDataStream.fromData(data.dataStream);
         instance.eventGrounding = EventGrounding.fromData(data.eventGrounding);
+        instance.eventSchema = EventSchema.fromData(data.eventSchema);
         instance.icon = data.icon;
         instance.rules = __getCopyArrayFn(
             TransformationRuleDescription.fromDataUnion,
         )(data.rules);
+        instance.running = data.running;
         instance.schemaRules = __getCopyArrayFn(
             TransformationRuleDescription.fromDataUnion,
         )(data.schemaRules);
@@ -152,28 +142,10 @@ export class AdapterDescription extends NamedStreamPipesEntity {
         )(data.valueRules);
         return instance;
     }
-
-    static 'fromDataUnion'(
-        data: AdapterDescriptionUnion,
-    ): AdapterDescriptionUnion {
-        if (!data) {
-            return data;
-        }
-        switch (data['@class']) {
-            case 'org.apache.streampipes.model.connect.adapter.GenericAdapterSetDescription':
-                return GenericAdapterSetDescription.fromData(data);
-            case 'org.apache.streampipes.model.connect.adapter.GenericAdapterStreamDescription':
-                return GenericAdapterStreamDescription.fromData(data);
-            case 'org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription':
-                return SpecificAdapterStreamDescription.fromData(data);
-            case 'org.apache.streampipes.model.connect.adapter.SpecificAdapterSetDescription':
-                return SpecificAdapterSetDescription.fromData(data);
-        }
-    }
 }
 
 export class AdapterEventPreview {
-    inputData: { [index: string]: GuessTypeInfo };
+    inputData: string;
     rules: TransformationRuleDescriptionUnion[];
 
     static fromData(
@@ -184,85 +156,11 @@ export class AdapterEventPreview {
             return data;
         }
         const instance = target || new AdapterEventPreview();
-        instance.inputData = __getCopyObjectFn(GuessTypeInfo.fromData)(
-            data.inputData,
-        );
+        instance.inputData = data.inputData;
         instance.rules = __getCopyArrayFn(
             TransformationRuleDescription.fromDataUnion,
         )(data.rules);
         return instance;
-    }
-}
-
-export class AdapterSetDescription extends AdapterDescription {
-    '@class':
-        | 'org.apache.streampipes.model.connect.adapter.AdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.GenericAdapterSetDescription'
-        | 'org.apache.streampipes.model.connect.adapter.SpecificAdapterSetDescription';
-    'dataSet': SpDataSet;
-
-    static 'fromData'(
-        data: AdapterSetDescription,
-        target?: AdapterSetDescription,
-    ): AdapterSetDescription {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new AdapterSetDescription();
-        super.fromData(data, instance);
-        instance.dataSet = SpDataSet.fromData(data.dataSet);
-        return instance;
-    }
-
-    static 'fromDataUnion'(
-        data: AdapterSetDescriptionUnion,
-    ): AdapterSetDescriptionUnion {
-        if (!data) {
-            return data;
-        }
-        switch (data['@class']) {
-            case 'org.apache.streampipes.model.connect.adapter.GenericAdapterSetDescription':
-                return GenericAdapterSetDescription.fromData(data);
-            case 'org.apache.streampipes.model.connect.adapter.SpecificAdapterSetDescription':
-                return SpecificAdapterSetDescription.fromData(data);
-        }
-    }
-}
-
-export class AdapterStreamDescription extends AdapterDescription {
-    '@class':
-        | 'org.apache.streampipes.model.connect.adapter.AdapterStreamDescription'
-        | 'org.apache.streampipes.model.connect.adapter.GenericAdapterStreamDescription'
-        | 'org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription';
-    'dataStream': SpDataStreamUnion;
-    'running': boolean;
-
-    static 'fromData'(
-        data: AdapterStreamDescription,
-        target?: AdapterStreamDescription,
-    ): AdapterStreamDescription {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new AdapterStreamDescription();
-        super.fromData(data, instance);
-        instance.dataStream = SpDataStream.fromDataUnion(data.dataStream);
-        instance.running = data.running;
-        return instance;
-    }
-
-    static 'fromDataUnion'(
-        data: AdapterStreamDescriptionUnion,
-    ): AdapterStreamDescriptionUnion {
-        if (!data) {
-            return data;
-        }
-        switch (data['@class']) {
-            case 'org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription':
-                return SpecificAdapterStreamDescription.fromData(data);
-            case 'org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription':
-                return SpecificAdapterStreamDescription.fromData(data);
-        }
     }
 }
 
@@ -285,7 +183,6 @@ export class AdapterType {
 
 export class TransformationRuleDescription {
     '@class':
-        | 'org.apache.streampipes.model.connect.rules.DebugSinkRuleDescription'
         | 'org.apache.streampipes.model.connect.rules.value.ValueTransformationRuleDescription'
         | 'org.apache.streampipes.model.connect.rules.value.AddTimestampRuleDescription'
         | 'org.apache.streampipes.model.connect.rules.value.AddValueTransformationRuleDescription'
@@ -351,8 +248,6 @@ export class TransformationRuleDescription {
                 return CorrectionValueTransformationRuleDescription.fromData(
                     data,
                 );
-            case 'org.apache.streampipes.model.connect.rules.DebugSinkRuleDescription':
-                return DebugSinkRuleDescription.fromData(data);
         }
     }
 }
@@ -868,6 +763,29 @@ export class ColorPickerStaticProperty extends StaticProperty {
     }
 }
 
+export class ConfigItem {
+    configurationScope: ConfigurationScope;
+    description: string;
+    key: string;
+    password: boolean;
+    value: string;
+    valueType: string;
+
+    static fromData(data: ConfigItem, target?: ConfigItem): ConfigItem {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new ConfigItem();
+        instance.configurationScope = data.configurationScope;
+        instance.description = data.description;
+        instance.key = data.key;
+        instance.password = data.password;
+        instance.value = data.value;
+        instance.valueType = data.valueType;
+        return instance;
+    }
+}
+
 export class MessagesInfo {
     groupId: string;
     topicName: string;
@@ -1226,7 +1144,10 @@ export class DataLakeMeasure {
     }
 }
 
-export class InvocableStreamPipesEntity extends NamedStreamPipesEntity {
+export class InvocableStreamPipesEntity
+    extends NamedStreamPipesEntity
+    implements EndpointSelectable
+{
     '@class':
         | 'org.apache.streampipes.model.base.InvocableStreamPipesEntity'
         | 'org.apache.streampipes.model.graph.DataProcessorInvocation'
@@ -1235,11 +1156,12 @@ export class InvocableStreamPipesEntity extends NamedStreamPipesEntity {
     'configured': boolean;
     'correspondingPipeline': string;
     'correspondingUser': string;
-    'inputStreams': SpDataStreamUnion[];
+    'detachPath': string;
+    'inputStreams': SpDataStream[];
     'selectedEndpointUrl': string;
     'staticProperties': StaticPropertyUnion[];
     'statusInfoSettings': ElementStatusInfoSettings;
-    'streamRequirements': SpDataStreamUnion[];
+    'streamRequirements': SpDataStream[];
     'supportedGrounding': EventGrounding;
     'uncompleted': boolean;
 
@@ -1256,7 +1178,8 @@ export class InvocableStreamPipesEntity extends NamedStreamPipesEntity {
         instance.configured = data.configured;
         instance.correspondingPipeline = data.correspondingPipeline;
         instance.correspondingUser = data.correspondingUser;
-        instance.inputStreams = __getCopyArrayFn(SpDataStream.fromDataUnion)(
+        instance.detachPath = data.detachPath;
+        instance.inputStreams = __getCopyArrayFn(SpDataStream.fromData)(
             data.inputStreams,
         );
         instance.selectedEndpointUrl = data.selectedEndpointUrl;
@@ -1266,9 +1189,9 @@ export class InvocableStreamPipesEntity extends NamedStreamPipesEntity {
         instance.statusInfoSettings = ElementStatusInfoSettings.fromData(
             data.statusInfoSettings,
         );
-        instance.streamRequirements = __getCopyArrayFn(
-            SpDataStream.fromDataUnion,
-        )(data.streamRequirements);
+        instance.streamRequirements = __getCopyArrayFn(SpDataStream.fromData)(
+            data.streamRequirements,
+        );
         instance.supportedGrounding = EventGrounding.fromData(
             data.supportedGrounding,
         );
@@ -1281,7 +1204,7 @@ export class DataProcessorInvocation extends InvocableStreamPipesEntity {
     '@class': 'org.apache.streampipes.model.graph.DataProcessorInvocation';
     'category': string[];
     'outputStrategies': OutputStrategyUnion[];
-    'outputStream': SpDataStreamUnion;
+    'outputStream': SpDataStream;
     'pathName': string;
 
     static 'fromData'(
@@ -1299,7 +1222,7 @@ export class DataProcessorInvocation extends InvocableStreamPipesEntity {
         instance.outputStrategies = __getCopyArrayFn(
             OutputStrategy.fromDataUnion,
         )(data.outputStrategies);
-        instance.outputStream = SpDataStream.fromDataUnion(data.outputStream);
+        instance.outputStream = SpDataStream.fromData(data.outputStream);
         instance.pathName = data.pathName;
         return instance;
     }
@@ -1346,44 +1269,6 @@ export class DataSeries {
     }
 }
 
-export class Message {
-    elementName: string;
-    notifications: Notification[];
-    success: boolean;
-
-    static fromData(data: Message, target?: Message): Message {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new Message();
-        instance.elementName = data.elementName;
-        instance.notifications = __getCopyArrayFn(Notification.fromData)(
-            data.notifications,
-        );
-        instance.success = data.success;
-        return instance;
-    }
-}
-
-export class DataSetModificationMessage extends Message {
-    eventGrounding: EventGrounding;
-    invocationId: string;
-
-    static fromData(
-        data: DataSetModificationMessage,
-        target?: DataSetModificationMessage,
-    ): DataSetModificationMessage {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new DataSetModificationMessage();
-        super.fromData(data, instance);
-        instance.eventGrounding = EventGrounding.fromData(data.eventGrounding);
-        instance.invocationId = data.invocationId;
-        return instance;
-    }
-}
-
 export class DataSinkInvocation extends InvocableStreamPipesEntity {
     '@class': 'org.apache.streampipes.model.graph.DataSinkInvocation';
     'category': string[];
@@ -1417,22 +1302,6 @@ export class DataSinkType {
         instance.code = data.code;
         instance.description = data.description;
         instance.label = data.label;
-        return instance;
-    }
-}
-
-export class DebugSinkRuleDescription extends TransformationRuleDescription {
-    '@class': 'org.apache.streampipes.model.connect.rules.DebugSinkRuleDescription';
-
-    static 'fromData'(
-        data: DebugSinkRuleDescription,
-        target?: DebugSinkRuleDescription,
-    ): DebugSinkRuleDescription {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new DebugSinkRuleDescription();
-        super.fromData(data, instance);
         return instance;
     }
 }
@@ -1501,7 +1370,7 @@ export class ElementComposition {
     description: string;
     name: string;
     sepas: DataProcessorInvocation[];
-    streams: SpDataStreamUnion[];
+    streams: SpDataStream[];
 
     static fromData(
         data: ElementComposition,
@@ -1516,7 +1385,7 @@ export class ElementComposition {
         instance.sepas = __getCopyArrayFn(DataProcessorInvocation.fromData)(
             data.sepas,
         );
-        instance.streams = __getCopyArrayFn(SpDataStream.fromDataUnion)(
+        instance.streams = __getCopyArrayFn(SpDataStream.fromData)(
             data.streams,
         );
         return instance;
@@ -1545,6 +1414,13 @@ export class ElementStatusInfoSettings {
         instance.statsTopic = data.statsTopic;
         return instance;
     }
+}
+
+export interface EndpointSelectable {
+    correspondingPipeline: string;
+    detachPath: string;
+    name: string;
+    selectedEndpointUrl: string;
 }
 
 export class ValueSpecification {
@@ -1596,6 +1472,25 @@ export class Enumeration extends ValueSpecification {
         instance.runtimeValues = __getCopyArrayFn(__identity<string>())(
             data.runtimeValues,
         );
+        return instance;
+    }
+}
+
+export class Message {
+    elementName: string;
+    notifications: Notification[];
+    success: boolean;
+
+    static fromData(data: Message, target?: Message): Message {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new Message();
+        instance.elementName = data.elementName;
+        instance.notifications = __getCopyArrayFn(Notification.fromData)(
+            data.notifications,
+        );
+        instance.success = data.success;
         return instance;
     }
 }
@@ -1946,28 +1841,6 @@ export class FixedOutputStrategy extends OutputStrategy {
     }
 }
 
-export class FormatDescription extends NamedStreamPipesEntity {
-    '@class': 'org.apache.streampipes.model.connect.grounding.FormatDescription';
-    'config': StaticPropertyUnion[];
-    'formatType': string;
-
-    static 'fromData'(
-        data: FormatDescription,
-        target?: FormatDescription,
-    ): FormatDescription {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new FormatDescription();
-        super.fromData(data, instance);
-        instance.config = __getCopyArrayFn(StaticProperty.fromDataUnion)(
-            data.config,
-        );
-        instance.formatType = data.formatType;
-        return instance;
-    }
-}
-
 export class FreeTextStaticProperty extends StaticProperty {
     '@class': 'org.apache.streampipes.model.staticproperty.FreeTextStaticProperty';
     'htmlAllowed': boolean;
@@ -2039,74 +1912,9 @@ export class FunctionId {
     }
 }
 
-export interface GenericAdapterDescription {
-    eventSchema: EventSchema;
-    formatDescription: FormatDescription;
-    protocolDescription: ProtocolDescription;
-    rules: TransformationRuleDescriptionUnion[];
-}
-
-export class GenericAdapterSetDescription
-    extends AdapterSetDescription
-    implements GenericAdapterDescription
-{
-    '@class': 'org.apache.streampipes.model.connect.adapter.GenericAdapterSetDescription';
-    'eventSchema': EventSchema;
-    'formatDescription': FormatDescription;
-    'protocolDescription': ProtocolDescription;
-
-    static 'fromData'(
-        data: GenericAdapterSetDescription,
-        target?: GenericAdapterSetDescription,
-    ): GenericAdapterSetDescription {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new GenericAdapterSetDescription();
-        super.fromData(data, instance);
-        instance.eventSchema = EventSchema.fromData(data.eventSchema);
-        instance.formatDescription = FormatDescription.fromData(
-            data.formatDescription,
-        );
-        instance.protocolDescription = ProtocolDescription.fromData(
-            data.protocolDescription,
-        );
-        return instance;
-    }
-}
-
-export class GenericAdapterStreamDescription
-    extends AdapterStreamDescription
-    implements GenericAdapterDescription
-{
-    '@class': 'org.apache.streampipes.model.connect.adapter.GenericAdapterStreamDescription';
-    'eventSchema': EventSchema;
-    'formatDescription': FormatDescription;
-    'protocolDescription': ProtocolDescription;
-
-    static 'fromData'(
-        data: GenericAdapterStreamDescription,
-        target?: GenericAdapterStreamDescription,
-    ): GenericAdapterStreamDescription {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new GenericAdapterStreamDescription();
-        super.fromData(data, instance);
-        instance.eventSchema = EventSchema.fromData(data.eventSchema);
-        instance.formatDescription = FormatDescription.fromData(
-            data.formatDescription,
-        );
-        instance.protocolDescription = ProtocolDescription.fromData(
-            data.protocolDescription,
-        );
-        return instance;
-    }
-}
-
 export class GuessSchema {
     '@class': 'org.apache.streampipes.model.connect.guess.GuessSchema';
-    'eventPreview': { [index: string]: GuessTypeInfo }[];
+    'eventPreview': string[];
     'eventSchema': EventSchema;
     'fieldStatusInfo': { [index: string]: FieldStatusInfo };
 
@@ -2116,31 +1924,13 @@ export class GuessSchema {
         }
         const instance = target || new GuessSchema();
         instance['@class'] = data['@class'];
-        instance.eventPreview = __getCopyArrayFn(
-            __getCopyObjectFn(GuessTypeInfo.fromData),
-        )(data.eventPreview);
+        instance.eventPreview = __getCopyArrayFn(__identity<string>())(
+            data.eventPreview,
+        );
         instance.eventSchema = EventSchema.fromData(data.eventSchema);
         instance.fieldStatusInfo = __getCopyObjectFn(FieldStatusInfo.fromData)(
             data.fieldStatusInfo,
         );
-        return instance;
-    }
-}
-
-export class GuessTypeInfo {
-    type: string;
-    value: any;
-
-    static fromData(
-        data: GuessTypeInfo,
-        target?: GuessTypeInfo,
-    ): GuessTypeInfo {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new GuessTypeInfo();
-        instance.type = data.type;
-        instance.value = data.value;
         return instance;
     }
 }
@@ -2150,7 +1940,8 @@ export class TransportProtocol {
         | 'org.apache.streampipes.model.grounding.JmsTransportProtocol'
         | 'org.apache.streampipes.model.grounding.KafkaTransportProtocol'
         | 'org.apache.streampipes.model.grounding.MqttTransportProtocol'
-        | 'org.apache.streampipes.model.grounding.NatsTransportProtocol';
+        | 'org.apache.streampipes.model.grounding.NatsTransportProtocol'
+        | 'org.apache.streampipes.model.grounding.PulsarTransportProtocol';
     'brokerHostname': string;
     'elementId': string;
     'topicDefinition': TopicDefinitionUnion;
@@ -2187,6 +1978,8 @@ export class TransportProtocol {
                 return MqttTransportProtocol.fromData(data);
             case 'org.apache.streampipes.model.grounding.NatsTransportProtocol':
                 return NatsTransportProtocol.fromData(data);
+            case 'org.apache.streampipes.model.grounding.PulsarTransportProtocol':
+                return PulsarTransportProtocol.fromData(data);
         }
     }
 }
@@ -2421,6 +2214,62 @@ export class MessageCounter {
     }
 }
 
+export class MessagingSettings {
+    acks: number;
+    batchSize: number;
+    jmsHost: string;
+    jmsPort: number;
+    kafkaHost: string;
+    kafkaPort: number;
+    lingerMs: number;
+    messageMaxBytes: number;
+    mqttHost: string;
+    mqttPort: number;
+    natsHost: string;
+    natsPort: number;
+    prioritizedFormats: SpDataFormat[];
+    prioritizedProtocols: SpProtocol[];
+    pulsarUrl: string;
+    supportedProtocols: string[];
+    zookeeperHost: string;
+    zookeeperPort: number;
+
+    static fromData(
+        data: MessagingSettings,
+        target?: MessagingSettings,
+    ): MessagingSettings {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new MessagingSettings();
+        instance.acks = data.acks;
+        instance.batchSize = data.batchSize;
+        instance.jmsHost = data.jmsHost;
+        instance.jmsPort = data.jmsPort;
+        instance.kafkaHost = data.kafkaHost;
+        instance.kafkaPort = data.kafkaPort;
+        instance.lingerMs = data.lingerMs;
+        instance.messageMaxBytes = data.messageMaxBytes;
+        instance.mqttHost = data.mqttHost;
+        instance.mqttPort = data.mqttPort;
+        instance.natsHost = data.natsHost;
+        instance.natsPort = data.natsPort;
+        instance.prioritizedFormats = __getCopyArrayFn(
+            __identity<SpDataFormat>(),
+        )(data.prioritizedFormats);
+        instance.prioritizedProtocols = __getCopyArrayFn(
+            __identity<SpProtocol>(),
+        )(data.prioritizedProtocols);
+        instance.pulsarUrl = data.pulsarUrl;
+        instance.supportedProtocols = __getCopyArrayFn(__identity<string>())(
+            data.supportedProtocols,
+        );
+        instance.zookeeperHost = data.zookeeperHost;
+        instance.zookeeperPort = data.zookeeperPort;
+        return instance;
+    }
+}
+
 export class MoveRuleDescription extends SchemaTransformationRuleDescription {
     '@class': 'org.apache.streampipes.model.connect.rules.schema.MoveRuleDescription';
     'newRuntimeKey': string;
@@ -2543,6 +2392,9 @@ export class Option {
     }
 }
 
+/**
+ * @deprecated since 0.92.0, for removal
+ */
 export class PageResult extends DataSeries {
     page: number;
     pageSum: number;
@@ -2898,9 +2750,9 @@ export class PipelineElementValidationInfo {
 export class PipelineModification {
     domId: string;
     elementId: string;
-    inputStreams: SpDataStreamUnion[];
+    inputStreams: SpDataStream[];
     outputStrategies: OutputStrategyUnion[];
-    outputStream: SpDataStreamUnion;
+    outputStream: SpDataStream;
     pipelineElementValid: boolean;
     staticProperties: StaticPropertyUnion[];
     validationInfos: PipelineElementValidationInfo[];
@@ -2915,13 +2767,13 @@ export class PipelineModification {
         const instance = target || new PipelineModification();
         instance.domId = data.domId;
         instance.elementId = data.elementId;
-        instance.inputStreams = __getCopyArrayFn(SpDataStream.fromDataUnion)(
+        instance.inputStreams = __getCopyArrayFn(SpDataStream.fromData)(
             data.inputStreams,
         );
         instance.outputStrategies = __getCopyArrayFn(
             OutputStrategy.fromDataUnion,
         )(data.outputStrategies);
-        instance.outputStream = SpDataStream.fromDataUnion(data.outputStream);
+        instance.outputStream = SpDataStream.fromData(data.outputStream);
         instance.pipelineElementValid = data.pipelineElementValid;
         instance.staticProperties = __getCopyArrayFn(
             StaticProperty.fromDataUnion,
@@ -3078,7 +2930,7 @@ export class PipelineTemplateDescription extends NamedStreamPipesEntity {
 
 export class PipelineTemplateInvocation {
     '@class': 'org.apache.streampipes.model.template.PipelineTemplateInvocation';
-    'dataSetId': string;
+    'dataStreamId': string;
     'kviName': string;
     'pipelineTemplateDescription': PipelineTemplateDescription;
     'pipelineTemplateId': string;
@@ -3093,7 +2945,7 @@ export class PipelineTemplateInvocation {
         }
         const instance = target || new PipelineTemplateInvocation();
         instance['@class'] = data['@class'];
-        instance.dataSetId = data.dataSetId;
+        instance.dataStreamId = data.dataStreamId;
         instance.kviName = data.kviName;
         instance.pipelineTemplateDescription =
             PipelineTemplateDescription.fromData(
@@ -3165,6 +3017,9 @@ export class PropertyValueSpecification {
     }
 }
 
+/**
+ * @deprecated since 0.93.0, for removal
+ */
 export class ProtocolDescription extends NamedStreamPipesEntity {
     '@class': 'org.apache.streampipes.model.connect.grounding.ProtocolDescription';
     'category': string[];
@@ -3187,6 +3042,22 @@ export class ProtocolDescription extends NamedStreamPipesEntity {
             data.config,
         );
         instance.sourceType = data.sourceType;
+        return instance;
+    }
+}
+
+export class PulsarTransportProtocol extends TransportProtocol {
+    '@class': 'org.apache.streampipes.model.grounding.PulsarTransportProtocol';
+
+    static 'fromData'(
+        data: PulsarTransportProtocol,
+        target?: PulsarTransportProtocol,
+    ): PulsarTransportProtocol {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new PulsarTransportProtocol();
+        super.fromData(data, instance);
         return instance;
     }
 }
@@ -3258,7 +3129,7 @@ export class RuntimeOptionsRequest {
         | 'org.apache.streampipes.model.runtime.RuntimeOptionsResponse';
     'appId': string;
     'belongsTo': string;
-    'inputStreams': SpDataStreamUnion[];
+    'inputStreams': SpDataStream[];
     'requestId': string;
     'staticProperties': StaticPropertyUnion[];
 
@@ -3273,7 +3144,7 @@ export class RuntimeOptionsRequest {
         instance['@class'] = data['@class'];
         instance.appId = data.appId;
         instance.belongsTo = data.belongsTo;
-        instance.inputStreams = __getCopyArrayFn(SpDataStream.fromDataUnion)(
+        instance.inputStreams = __getCopyArrayFn(SpDataStream.fromData)(
             data.inputStreams,
         );
         instance.requestId = data.requestId;
@@ -3347,7 +3218,12 @@ export class RuntimeResolvableOneOfStaticProperty extends OneOfStaticProperty {
 export class RuntimeResolvableTreeInputStaticProperty extends StaticProperty {
     '@class': 'org.apache.streampipes.model.staticproperty.RuntimeResolvableTreeInputStaticProperty';
     'dependsOn': string[];
+    'latestFetchedNodes': TreeInputNode[];
+    'multiSelection': boolean;
+    'nextBaseNodeToResolve': string;
     'nodes': TreeInputNode[];
+    'resolveDynamically': boolean;
+    'selectedNodesInternalNames': string[];
 
     static 'fromData'(
         data: RuntimeResolvableTreeInputStaticProperty,
@@ -3362,7 +3238,16 @@ export class RuntimeResolvableTreeInputStaticProperty extends StaticProperty {
         instance.dependsOn = __getCopyArrayFn(__identity<string>())(
             data.dependsOn,
         );
+        instance.latestFetchedNodes = __getCopyArrayFn(TreeInputNode.fromData)(
+            data.latestFetchedNodes,
+        );
+        instance.multiSelection = data.multiSelection;
+        instance.nextBaseNodeToResolve = data.nextBaseNodeToResolve;
         instance.nodes = __getCopyArrayFn(TreeInputNode.fromData)(data.nodes);
+        instance.resolveDynamically = data.resolveDynamically;
+        instance.selectedNodesInternalNames = __getCopyArrayFn(
+            __identity<string>(),
+        )(data.selectedNodesInternalNames);
         return instance;
     }
 }
@@ -3383,6 +3268,26 @@ export class SecretStaticProperty extends StaticProperty {
         super.fromData(data, instance);
         instance.encrypted = data.encrypted;
         instance.value = data.value;
+        return instance;
+    }
+}
+
+export class ShortUserInfo {
+    displayName: string;
+    email: string;
+    principalId: string;
+
+    static fromData(
+        data: ShortUserInfo,
+        target?: ShortUserInfo,
+    ): ShortUserInfo {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new ShortUserInfo();
+        instance.displayName = data.displayName;
+        instance.email = data.email;
+        instance.principalId = data.principalId;
         return instance;
     }
 }
@@ -3456,9 +3361,7 @@ export class SlideToggleStaticProperty extends StaticProperty {
 }
 
 export class SpDataStream extends NamedStreamPipesEntity {
-    '@class':
-        | 'org.apache.streampipes.model.SpDataStream'
-        | 'org.apache.streampipes.model.SpDataSet';
+    '@class': 'org.apache.streampipes.model.SpDataStream';
     'category': string[];
     'correspondingAdapterId': string;
     'eventGrounding': EventGrounding;
@@ -3480,50 +3383,11 @@ export class SpDataStream extends NamedStreamPipesEntity {
         instance.index = data.index;
         return instance;
     }
-
-    static 'fromDataUnion'(data: SpDataStreamUnion): SpDataStreamUnion {
-        if (!data) {
-            return data;
-        }
-        switch (data['@class']) {
-            case 'org.apache.streampipes.model.SpDataStream':
-                return SpDataStream.fromData(data);
-            case 'org.apache.streampipes.model.SpDataSet':
-                return SpDataSet.fromData(data);
-        }
-    }
-}
-
-export class SpDataSet extends SpDataStream {
-    '@class': 'org.apache.streampipes.model.SpDataSet';
-    'actualTopicName': string;
-    'brokerHostname': string;
-    'correspondingPipeline': string;
-    'datasetInvocationId': string;
-    'selectedEndpointUrl': string;
-    'supportedGrounding': EventGrounding;
-
-    static 'fromData'(data: SpDataSet, target?: SpDataSet): SpDataSet {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new SpDataSet();
-        super.fromData(data, instance);
-        instance.actualTopicName = data.actualTopicName;
-        instance.brokerHostname = data.brokerHostname;
-        instance.correspondingPipeline = data.correspondingPipeline;
-        instance.datasetInvocationId = data.datasetInvocationId;
-        instance.selectedEndpointUrl = data.selectedEndpointUrl;
-        instance.supportedGrounding = EventGrounding.fromData(
-            data.supportedGrounding,
-        );
-        return instance;
-    }
 }
 
 export class SpDataStreamContainer {
     '@class': 'org.apache.streampipes.model.SpDataStreamContainer';
-    'list': SpDataStreamUnion[];
+    'list': SpDataStream[];
 
     static 'fromData'(
         data: SpDataStreamContainer,
@@ -3534,13 +3398,13 @@ export class SpDataStreamContainer {
         }
         const instance = target || new SpDataStreamContainer();
         instance['@class'] = data['@class'];
-        instance.list = __getCopyArrayFn(SpDataStream.fromDataUnion)(data.list);
+        instance.list = __getCopyArrayFn(SpDataStream.fromData)(data.list);
         return instance;
     }
 }
 
 export class SpLogEntry {
-    errorMessage: StreamPipesErrorMessage;
+    errorMessage: SpLogMessage;
     timestamp: number;
 
     static fromData(data: SpLogEntry, target?: SpLogEntry): SpLogEntry {
@@ -3548,10 +3412,29 @@ export class SpLogEntry {
             return data;
         }
         const instance = target || new SpLogEntry();
-        instance.errorMessage = StreamPipesErrorMessage.fromData(
-            data.errorMessage,
-        );
+        instance.errorMessage = SpLogMessage.fromData(data.errorMessage);
         instance.timestamp = data.timestamp;
+        return instance;
+    }
+}
+
+export class SpLogMessage {
+    cause: string;
+    detail: string;
+    fullStackTrace: string;
+    level: SpLogLevel;
+    title: string;
+
+    static fromData(data: SpLogMessage, target?: SpLogMessage): SpLogMessage {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new SpLogMessage();
+        instance.cause = data.cause;
+        instance.detail = data.detail;
+        instance.fullStackTrace = data.fullStackTrace;
+        instance.level = data.level;
+        instance.title = data.title;
         return instance;
     }
 }
@@ -3606,34 +3489,73 @@ export class SpQueryResult {
     }
 }
 
-export class SpecificAdapterSetDescription extends AdapterSetDescription {
-    '@class': 'org.apache.streampipes.model.connect.adapter.SpecificAdapterSetDescription';
+export class SpServiceConfiguration {
+    configs: ConfigItem[];
+    rev: string;
+    serviceGroup: string;
+    serviceName: string;
 
-    static 'fromData'(
-        data: SpecificAdapterSetDescription,
-        target?: SpecificAdapterSetDescription,
-    ): SpecificAdapterSetDescription {
+    static fromData(
+        data: SpServiceConfiguration,
+        target?: SpServiceConfiguration,
+    ): SpServiceConfiguration {
         if (!data) {
             return data;
         }
-        const instance = target || new SpecificAdapterSetDescription();
-        super.fromData(data, instance);
+        const instance = target || new SpServiceConfiguration();
+        instance.configs = __getCopyArrayFn(ConfigItem.fromData)(data.configs);
+        instance.rev = data.rev;
+        instance.serviceGroup = data.serviceGroup;
+        instance.serviceName = data.serviceName;
         return instance;
     }
 }
 
-export class SpecificAdapterStreamDescription extends AdapterStreamDescription {
-    '@class': 'org.apache.streampipes.model.connect.adapter.SpecificAdapterStreamDescription';
+export class SpServiceRegistration {
+    firstTimeSeenUnhealthy: number;
+    healthCheckPath: string;
+    healthy: boolean;
+    host: string;
+    port: number;
+    rev: string;
+    scheme: string;
+    svcGroup: string;
+    svcId: string;
+    tags: SpServiceTag[];
 
-    static 'fromData'(
-        data: SpecificAdapterStreamDescription,
-        target?: SpecificAdapterStreamDescription,
-    ): SpecificAdapterStreamDescription {
+    static fromData(
+        data: SpServiceRegistration,
+        target?: SpServiceRegistration,
+    ): SpServiceRegistration {
         if (!data) {
             return data;
         }
-        const instance = target || new SpecificAdapterStreamDescription();
-        super.fromData(data, instance);
+        const instance = target || new SpServiceRegistration();
+        instance.firstTimeSeenUnhealthy = data.firstTimeSeenUnhealthy;
+        instance.healthCheckPath = data.healthCheckPath;
+        instance.healthy = data.healthy;
+        instance.host = data.host;
+        instance.port = data.port;
+        instance.rev = data.rev;
+        instance.scheme = data.scheme;
+        instance.svcGroup = data.svcGroup;
+        instance.svcId = data.svcId;
+        instance.tags = __getCopyArrayFn(SpServiceTag.fromData)(data.tags);
+        return instance;
+    }
+}
+
+export class SpServiceTag {
+    prefix: SpServiceTagPrefix;
+    value: string;
+
+    static fromData(data: SpServiceTag, target?: SpServiceTag): SpServiceTag {
+        if (!data) {
+            return data;
+        }
+        const instance = target || new SpServiceTag();
+        instance.prefix = data.prefix;
+        instance.value = data.value;
         return instance;
     }
 }
@@ -3768,30 +3690,6 @@ export class StreamPipesApplicationPackage {
     }
 }
 
-export class StreamPipesErrorMessage {
-    cause: string;
-    detail: string;
-    fullStackTrace: string;
-    level: string;
-    title: string;
-
-    static fromData(
-        data: StreamPipesErrorMessage,
-        target?: StreamPipesErrorMessage,
-    ): StreamPipesErrorMessage {
-        if (!data) {
-            return data;
-        }
-        const instance = target || new StreamPipesErrorMessage();
-        instance.cause = data.cause;
-        instance.detail = data.detail;
-        instance.fullStackTrace = data.fullStackTrace;
-        instance.level = data.level;
-        instance.title = data.title;
-        return instance;
-    }
-}
-
 export class SuccessMessage extends Message {
     static fromData(
         data: SuccessMessage,
@@ -3913,6 +3811,7 @@ export class TreeInputNode {
     children: TreeInputNode[];
     dataNode: boolean;
     internalNodeName: string;
+    nodeMetadata: { [index: string]: any };
     nodeName: string;
     selected: boolean;
 
@@ -3929,6 +3828,9 @@ export class TreeInputNode {
         );
         instance.dataNode = data.dataNode;
         instance.internalNodeName = data.internalNodeName;
+        instance.nodeMetadata = __getCopyObjectFn(__identity<any>())(
+            data.nodeMetadata,
+        );
         instance.nodeName = data.nodeName;
         instance.selected = data.selected;
         return instance;
@@ -4066,17 +3968,10 @@ export class WildcardTopicMapping {
     }
 }
 
-export type AdapterDescriptionUnion =
-    | GenericAdapterSetDescription
-    | GenericAdapterStreamDescription
-    | SpecificAdapterStreamDescription
-    | SpecificAdapterSetDescription;
-
-export type AdapterSetDescriptionUnion =
-    | GenericAdapterSetDescription
-    | SpecificAdapterSetDescription;
-
-export type AdapterStreamDescriptionUnion = SpecificAdapterStreamDescription;
+export type ConfigurationScope =
+    | 'CONTAINER_STARTUP_CONFIG'
+    | 'CONTAINER_GLOBAL_CONFIG'
+    | 'PIPELINE_ELEMENT_CONFIG';
 
 export type EdgeValidationStatusType = 'COMPLETE' | 'INCOMPLETE' | 'INVALID';
 
@@ -4107,9 +4002,22 @@ export type SelectionStaticPropertyUnion =
     | AnyStaticProperty
     | OneOfStaticProperty;
 
-export type SpDataStreamUnion = SpDataStream | SpDataSet;
+export type SpDataFormat = 'CBOR' | 'JSON' | 'FST' | 'SMILE';
+
+export type SpLogLevel = 'INFO' | 'WARN' | 'ERROR';
+
+export type SpProtocol = 'KAFKA' | 'JMS' | 'MQTT' | 'NATS' | 'PULSAR';
 
 export type SpQueryStatus = 'OK' | 'TOO_MUCH_DATA';
+
+export type SpServiceTagPrefix =
+    | 'SYSTEM'
+    | 'SP_GROUP'
+    | 'ADAPTER'
+    | 'DATA_STREAM'
+    | 'DATA_PROCESSOR'
+    | 'DATA_SINK'
+    | 'DATA_SET';
 
 export type StaticPropertyType =
     | 'AnyStaticProperty'
@@ -4173,14 +4081,14 @@ export type TransformationRuleDescriptionUnion =
     | RenameRuleDescription
     | MoveRuleDescription
     | ChangeDatatypeTransformationRuleDescription
-    | CorrectionValueTransformationRuleDescription
-    | DebugSinkRuleDescription;
+    | CorrectionValueTransformationRuleDescription;
 
 export type TransportProtocolUnion =
     | JmsTransportProtocol
     | KafkaTransportProtocol
     | MqttTransportProtocol
-    | NatsTransportProtocol;
+    | NatsTransportProtocol
+    | PulsarTransportProtocol;
 
 export type ValidationInfoLevel = 'INFO' | 'ERROR';
 

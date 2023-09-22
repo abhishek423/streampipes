@@ -17,24 +17,20 @@
  */
 package org.apache.streampipes.wrapper.context;
 
-import org.apache.streampipes.client.StreamPipesClient;
-import org.apache.streampipes.extensions.management.config.ConfigExtractor;
-import org.apache.streampipes.extensions.management.monitoring.SpMonitoringManager;
-import org.apache.streampipes.model.runtime.SchemaInfo;
-import org.apache.streampipes.model.runtime.SourceInfo;
+import org.apache.streampipes.client.api.IStreamPipesClient;
+import org.apache.streampipes.extensions.api.config.IConfigExtractor;
+import org.apache.streampipes.extensions.api.monitoring.IExtensionsLogger;
+import org.apache.streampipes.extensions.api.pe.context.EventSinkRuntimeContext;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class SpEventSinkRuntimeContext extends SpRuntimeContext implements
     EventSinkRuntimeContext, Serializable {
 
-  public SpEventSinkRuntimeContext(List<SourceInfo> sourceInfo,
-                                   List<SchemaInfo> inputSchemaInfo,
-                                   String correspondingUser,
-                                   ConfigExtractor configExtractor,
-                                   StreamPipesClient streamPipesClient,
-                                   SpMonitoringManager logManager) {
-    super(sourceInfo, inputSchemaInfo, correspondingUser, configExtractor, streamPipesClient, logManager);
+  public SpEventSinkRuntimeContext(String correspondingUser,
+                                   IConfigExtractor configExtractor,
+                                   IStreamPipesClient streamPipesClient,
+                                   IExtensionsLogger extensionsLogger) {
+    super(correspondingUser, configExtractor, streamPipesClient, extensionsLogger);
   }
 }

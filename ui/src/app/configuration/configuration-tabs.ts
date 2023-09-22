@@ -32,24 +32,29 @@ export class SpConfigurationTabs {
                 itemLink: ['configuration', 'datalake'],
             },
             {
-                itemId: 'email',
-                itemTitle: 'Mail',
-                itemLink: ['configuration', 'email'],
-            },
-            {
                 itemId: 'export',
                 itemTitle: 'Export/Import',
                 itemLink: ['configuration', 'export'],
             },
             {
+                itemId: 'extensions-services',
+                itemTitle: 'Extensions Services',
+                itemLink: ['configuration', 'extensions-services'],
+            },
+            {
+                itemId: 'labels',
+                itemTitle: 'Labels',
+                itemLink: ['configuration', 'labels'],
+            },
+            {
+                itemId: 'email',
+                itemTitle: 'Mail',
+                itemLink: ['configuration', 'email'],
+            },
+            {
                 itemId: 'messaging',
                 itemTitle: 'Messaging',
                 itemLink: ['configuration', 'messaging'],
-            },
-            {
-                itemId: 'pipelineelement',
-                itemTitle: 'Pipeline Element Configuration',
-                itemLink: ['configuration', 'pipelineelement'],
             },
             {
                 itemId: 'security',

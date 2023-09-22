@@ -16,11 +16,11 @@
  *
  */
 
-import { GenericAdapterBuilder } from '../../support/builder/GenericAdapterBuilder';
 import { PipelineElementBuilder } from '../../support/builder/PipelineElementBuilder';
 import { ThirdPartyIntegrationUtils } from '../../support/utils/ThirdPartyIntegrationUtils';
 import { PipelineElementInput } from '../../support/model/PipelineElementInput';
 import { ParameterUtils } from '../../support/utils/ParameterUtils';
+import { AdapterBuilder } from '../../support/builder/AdapterBuilder';
 
 describe('Test Kafka Integration', () => {
     beforeEach('Setup Test', () => {
@@ -35,7 +35,7 @@ describe('Test Kafka Integration', () => {
         const sink: PipelineElementInput = PipelineElementBuilder.create(
             'kafka_publisher',
         )
-            .addInput('select', 'access-mode-unauthenticated_plain', 'check')
+            .addInput('radio', 'access-mode-unauthenticated_plain', '')
             .addInput('input', 'host', host)
             .addInput(
                 'input',
@@ -45,19 +45,16 @@ describe('Test Kafka Integration', () => {
             .addInput('input', 'topic', topicName)
             .build();
 
-        const adapter = GenericAdapterBuilder.create('Apache_Kafka')
+        const adapter = AdapterBuilder.create('Apache_Kafka')
             .setName('Kafka4')
             .setTimestampProperty('timestamp')
-            .addProtocolInput(
-                'select',
-                'access-mode-unauthenticated_plain',
-                'check',
-            )
+            .addProtocolInput('radio', 'access-mode-unauthenticated_plain', '')
             .addProtocolInput('input', 'host', host)
             .addProtocolInput('input', 'port', port)
             .addProtocolInput('click', 'sp-reload', '')
-            .addProtocolInput('select', topicName, 'check')
-            .setFormat('json_object')
+            .addProtocolInput('radio', topicName, '')
+            .setFormat('json')
+            .addFormatInput('radio', 'json_options-single_object', '')
             .build();
 
         ThirdPartyIntegrationUtils.runTest(sink, adapter);

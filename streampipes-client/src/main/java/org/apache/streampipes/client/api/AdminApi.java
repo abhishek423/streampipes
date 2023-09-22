@@ -19,39 +19,79 @@ package org.apache.streampipes.client.api;
 
 import org.apache.streampipes.client.model.StreamPipesClientConfig;
 import org.apache.streampipes.client.util.StreamPipesApiPath;
-import org.apache.streampipes.model.config.MessagingSettings;
+import org.apache.streampipes.model.configuration.MessagingSettings;
 import org.apache.streampipes.model.connect.adapter.AdapterDescription;
+import org.apache.streampipes.model.extensions.configuration.SpServiceConfiguration;
+import org.apache.streampipes.model.extensions.svcdiscovery.SpServiceRegistration;
 import org.apache.streampipes.model.function.FunctionDefinition;
 import org.apache.streampipes.model.message.SuccessMessage;
 
 import java.util.List;
 
-public class AdminApi extends AbstractClientApi {
+public class AdminApi extends AbstractClientApi implements IAdminApi {
 
   public AdminApi(StreamPipesClientConfig clientConfig) {
     super(clientConfig);
   }
 
+  @Override
+  public void registerService(SpServiceRegistration serviceRegistration) {
+    post(getExtensionsServiceRegistrationPath(), serviceRegistration);
+  }
+
+  @Override
+  public void deregisterService(String serviceId) {
+    post(getExtensionsServiceRegistrationPath().addToPath(serviceId));
+  }
+
+  @Override
+  public void registerServiceConfiguration(SpServiceConfiguration serviceConfiguration) {
+    post(getExtensionsServiceConfigurationPath(), serviceConfiguration);
+  }
+
+  @Override
+  public SpServiceConfiguration getServiceConfiguration(String serviceGroup) {
+    var opt = getSingleOpt(
+        getExtensionsServiceConfigurationPath().addToPath(serviceGroup), SpServiceConfiguration.class);
+
+    return opt.orElseGet(SpServiceConfiguration::new);
+  }
+
+  @Override
   public void registerAdapters(List<AdapterDescription> adapters) {
     post(getConnectPath(), adapters);
   }
 
+  @Override
   public void registerFunctions(List<FunctionDefinition> functions) {
     post(getFunctionsPath(), functions);
   }
 
+  @Override
   public void deregisterFunction(String functionId) {
     delete(getDeleteFunctionPath(functionId), SuccessMessage.class);
   }
 
+  @Override
   public MessagingSettings getMessagingSettings() {
     return getSingle(getMessagingSettingsPath(), MessagingSettings.class);
+  }
+
+  private StreamPipesApiPath getExtensionsServiceRegistrationPath() {
+    return StreamPipesApiPath
+        .fromBaseApiPath()
+        .addToPath("extensions-services");
+  }
+
+  private StreamPipesApiPath getExtensionsServiceConfigurationPath() {
+    return StreamPipesApiPath
+        .fromBaseApiPath()
+        .addToPath("extensions-services-configurations");
   }
 
   private StreamPipesApiPath getMessagingSettingsPath() {
     return StreamPipesApiPath
         .fromBaseApiPath()
-        .addToPath("consul")
         .addToPath("messaging");
   }
 

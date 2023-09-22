@@ -17,6 +17,7 @@
 from typing import Any, Callable, Dict, List, Optional
 
 from streampipes.client.client import StreamPipesClient
+from streampipes.functions.broker.broker_handler import get_broker_description
 from streampipes.functions.function_handler import FunctionHandler
 from streampipes.functions.registration import Registration
 from streampipes.functions.streampipes_function import StreamPipesFunction
@@ -38,8 +39,6 @@ class RiverFunction(StreamPipesFunction):
     ----------
     function_definition: FunctionDefinition
         The function definition which contains the output stream.
-    stream_ids: List[str]
-        The ids of the data stream to train the model.
     model: Any
         The model to train. It meant to be a River model/pipeline,
         but can be every model with a 'learn_one' and 'predict_one' method.
@@ -58,7 +57,6 @@ class RiverFunction(StreamPipesFunction):
     def __init__(
         self,
         function_definition: FunctionDefinition,
-        stream_ids: List[str],
         model: Any,
         supervised: bool,
         target_label: Optional[str],
@@ -67,7 +65,6 @@ class RiverFunction(StreamPipesFunction):
         on_stop: Callable[[Any], None],
     ) -> None:
         super().__init__(function_definition)
-        self.stream_ids = stream_ids
         self.model = model
         self.supervised = supervised
         self.target_label = target_label
@@ -76,17 +73,6 @@ class RiverFunction(StreamPipesFunction):
         self.on_stop = on_stop
 
         self.learning = True
-
-    def requiredStreamIds(self) -> List[str]:
-        """Returns the stream ids required by this function.
-
-        Returns
-        -------
-        stream_ids: List[str]
-            List of stream ids required by the function
-
-        """
-        return self.stream_ids
 
     def onServiceStarted(self, context: FunctionContext):
         """Executes the `on_start` method of the function.
@@ -187,10 +173,15 @@ class OnlineML:
             attributes["truth"] = prediction_type
             if target_label is None:
                 raise ValueError("You must define a target attribute for a supervised model.")
-        output_stream = create_data_stream("prediction", attributes)
-        function_definition = FunctionDefinition().add_output_data_stream(output_stream)
+
+        output_stream = create_data_stream(
+            name="prediction",
+            attributes=attributes,
+            broker=get_broker_description(client.dataStreamApi.get(stream_ids[0])),  # type: ignore
+        )
+        function_definition = FunctionDefinition(consumed_streams=stream_ids).add_output_data_stream(output_stream)
         self.sp_function = RiverFunction(
-            function_definition, stream_ids, model, supervised, target_label, on_start, on_event, on_stop
+            function_definition, model, supervised, target_label, on_start, on_event, on_stop
         )
 
     def start(self):

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
 @TsModel
@@ -34,7 +35,9 @@ public class GuessSchema {
 
   public EventSchema eventSchema;
 
-  public List<Map<String, GuessTypeInfo>> eventPreview;
+  //public List<Map<String, GuessTypeInfo>> eventPreview;
+
+  private List<String> eventPreview;
 
   public Map<String, FieldStatusInfo> fieldStatusInfo;
 
@@ -58,11 +61,11 @@ public class GuessSchema {
     this.eventSchema = eventSchema;
   }
 
-  public List<Map<String, GuessTypeInfo>> getEventPreview() {
+  public List<String> getEventPreview() {
     return eventPreview;
   }
 
-  public void setEventPreview(List<Map<String, GuessTypeInfo>> eventPreview) {
+  public void setEventPreview(List<String> eventPreview) {
     this.eventPreview = eventPreview;
   }
 
@@ -74,5 +77,30 @@ public class GuessSchema {
     this.fieldStatusInfo = fieldStatusInfo;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    GuessSchema that = (GuessSchema) o;
+    return Objects.equals(eventSchema, that.eventSchema) && Objects.equals(eventPreview,
+        that.eventPreview) && Objects.equals(fieldStatusInfo, that.fieldStatusInfo);
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(eventSchema, eventPreview, fieldStatusInfo);
+  }
+
+  @Override
+  public String toString() {
+    return "GuessSchema{"
+           + "eventSchema=" + eventSchema
+           + ", eventPreview=" + eventPreview
+           + ", fieldStatusInfo=" + fieldStatusInfo
+           + '}';
+  }
 }

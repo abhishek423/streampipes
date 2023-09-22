@@ -51,6 +51,21 @@ public class DefaultEnvironment implements Environment {
   }
 
   @Override
+  public StringEnvironmentVariable getSpCoreScheme() {
+    return new StringEnvironmentVariable(Envs.SP_CORE_SCHEME);
+  }
+
+  @Override
+  public StringEnvironmentVariable getSpCoreHost() {
+    return new StringEnvironmentVariable(Envs.SP_CORE_HOST);
+  }
+
+  @Override
+  public IntEnvironmentVariable getSpCorePort() {
+    return new IntEnvironmentVariable(Envs.SP_CORE_PORT);
+  }
+
+  @Override
   public StringEnvironmentVariable getTsStorageProtocol() {
     return new StringEnvironmentVariable(Envs.SP_TS_STORAGE_PROTOCOL);
   }
@@ -150,6 +165,11 @@ public class DefaultEnvironment implements Environment {
   }
 
   @Override
+  public StringEnvironmentVariable getPrioritizedProtocol() {
+    return new StringEnvironmentVariable(Envs.SP_PRIORITIZED_PROTOCOL);
+  }
+
+  @Override
   public BooleanEnvironmentVariable getSetupInstallPipelineElements() {
     return new BooleanEnvironmentVariable(Envs.SP_SETUP_INSTALL_PIPELINE_ELEMENTS);
   }
@@ -177,6 +197,21 @@ public class DefaultEnvironment implements Environment {
   @Override
   public StringEnvironmentVariable getCoreAssetBaseDir() {
     return new StringEnvironmentVariable(Envs.SP_CORE_ASSET_BASE_DIR);
+  }
+
+  @Override
+  public StringEnvironmentVariable getFlinkJarFileLoc() {
+    return new StringEnvironmentVariable(Envs.SP_FLINK_JAR_FILE_LOC);
+  }
+
+  @Override
+  public StringEnvironmentVariable getFlinkJobmanagerHost() {
+    return new StringEnvironmentVariable(Envs.SP_FLINK_JOBMANAGER_HOST);
+  }
+
+  @Override
+  public IntEnvironmentVariable getFlinkJobmanagerPort() {
+    return new IntEnvironmentVariable(Envs.SP_FLINK_JOBMANAGER_PORT);
   }
 
   @Override

@@ -18,12 +18,13 @@
 
 package org.apache.streampipes.rest.extensions.connect;
 
-import org.apache.streampipes.extensions.api.connect.exception.AdapterException;
+import org.apache.streampipes.commons.exceptions.connect.AdapterException;
 import org.apache.streampipes.extensions.management.connect.AdapterWorkerManagement;
-import org.apache.streampipes.model.StreamPipesErrorMessage;
-import org.apache.streampipes.model.connect.adapter.AdapterSetDescription;
-import org.apache.streampipes.model.connect.adapter.AdapterStreamDescription;
+import org.apache.streampipes.extensions.management.init.DeclarersSingleton;
+import org.apache.streampipes.extensions.management.init.RunningAdapterInstances;
+import org.apache.streampipes.model.connect.adapter.AdapterDescription;
 import org.apache.streampipes.model.message.Notifications;
+import org.apache.streampipes.model.monitoring.SpLogMessage;
 import org.apache.streampipes.rest.shared.annotation.JacksonSerialized;
 import org.apache.streampipes.rest.shared.impl.AbstractSharedRestInterface;
 
@@ -38,6 +39,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+
 @Path("/api/v1/worker")
 public class AdapterWorkerResource extends AbstractSharedRestInterface {
 
@@ -46,7 +48,10 @@ public class AdapterWorkerResource extends AbstractSharedRestInterface {
   private AdapterWorkerManagement adapterManagement;
 
   public AdapterWorkerResource() {
-    adapterManagement = new AdapterWorkerManagement();
+    adapterManagement = new AdapterWorkerManagement(
+        RunningAdapterInstances.INSTANCE,
+        DeclarersSingleton.getInstance()
+    );
   }
 
   public AdapterWorkerResource(AdapterWorkerManagement adapterManagement) {
@@ -67,16 +72,16 @@ public class AdapterWorkerResource extends AbstractSharedRestInterface {
   @Path("/stream/invoke")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response invokeStreamAdapter(AdapterStreamDescription adapterStreamDescription) {
+  public Response invokeAdapter(AdapterDescription adapterStreamDescription) {
 
     try {
-      adapterManagement.invokeStreamAdapter(adapterStreamDescription);
+      adapterManagement.invokeAdapter(adapterStreamDescription);
       String responseMessage = "Stream adapter with id " + adapterStreamDescription.getUri() + " successfully started";
       logger.info(responseMessage);
       return ok(Notifications.success(responseMessage));
     } catch (AdapterException e) {
       logger.error("Error while starting adapter with id " + adapterStreamDescription.getUri(), e);
-      return serverError(StreamPipesErrorMessage.from(e));
+      return serverError(SpLogMessage.from(e));
     }
   }
 
@@ -85,12 +90,12 @@ public class AdapterWorkerResource extends AbstractSharedRestInterface {
   @Path("/stream/stop")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response stopStreamAdapter(AdapterStreamDescription adapterStreamDescription) {
+  public Response stopAdapter(AdapterDescription adapterStreamDescription) {
 
     String responseMessage;
     try {
       if (adapterStreamDescription.isRunning()) {
-        adapterManagement.stopStreamAdapter(adapterStreamDescription);
+        adapterManagement.stopAdapter(adapterStreamDescription);
         responseMessage = "Stream adapter with id " + adapterStreamDescription.getElementId() + " successfully stopped";
       } else {
         responseMessage =
@@ -100,47 +105,8 @@ public class AdapterWorkerResource extends AbstractSharedRestInterface {
       return ok(Notifications.success(responseMessage));
     } catch (AdapterException e) {
       logger.error("Error while stopping adapter with id " + adapterStreamDescription.getElementId(), e);
-      return serverError(StreamPipesErrorMessage.from(e));
+      return serverError(SpLogMessage.from(e));
     }
   }
 
-  @POST
-  @JacksonSerialized
-  @Path("/set/invoke")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response invokeSetAdapter(AdapterSetDescription adapterSetDescription) {
-
-    try {
-      adapterManagement.invokeSetAdapter(adapterSetDescription);
-    } catch (AdapterException e) {
-      logger.error("Error while starting adapter with id " + adapterSetDescription.getElementId(), e);
-      return ok(Notifications.error(e.getMessage()));
-    }
-
-    String responseMessage = "Set adapter with id " + adapterSetDescription.getElementId() + " successfully started";
-
-    logger.info(responseMessage);
-    return ok(Notifications.success(responseMessage));
-  }
-
-  @POST
-  @JacksonSerialized
-  @Path("/set/stop")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response stopSetAdapter(AdapterSetDescription adapterSetDescription) {
-
-    try {
-      adapterManagement.stopSetAdapter(adapterSetDescription);
-    } catch (AdapterException e) {
-      logger.error("Error while stopping adapter with id " + adapterSetDescription.getElementId(), e);
-      return ok(Notifications.error(e.getMessage()));
-    }
-
-    String responseMessage = "Set adapter with id " + adapterSetDescription.getElementId() + " successfully stopped";
-
-    logger.info(responseMessage);
-    return ok(Notifications.success(responseMessage));
-  }
 }

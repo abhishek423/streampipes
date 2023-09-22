@@ -20,7 +20,7 @@ package org.apache.streampipes.manager.execution.endpoint;
 import org.apache.streampipes.commons.exceptions.NoServiceEndpointsAvailableException;
 import org.apache.streampipes.model.base.NamedStreamPipesEntity;
 import org.apache.streampipes.svcdiscovery.SpServiceDiscovery;
-import org.apache.streampipes.svcdiscovery.api.model.DefaultSpServiceGroups;
+import org.apache.streampipes.svcdiscovery.api.model.DefaultSpServiceTypes;
 import org.apache.streampipes.svcdiscovery.api.model.SpServiceUrlProvider;
 
 import org.slf4j.Logger;
@@ -33,8 +33,8 @@ public class ExtensionsServiceEndpointGenerator {
 
   private static final Logger LOG = LoggerFactory.getLogger(ExtensionsServiceEndpointGenerator.class);
 
-  private String appId;
-  private SpServiceUrlProvider spServiceUrlProvider;
+  private final String appId;
+  private final SpServiceUrlProvider spServiceUrlProvider;
 
   public ExtensionsServiceEndpointGenerator(String appId,
                                             SpServiceUrlProvider spServiceUrlProvider) {
@@ -56,8 +56,18 @@ public class ExtensionsServiceEndpointGenerator {
   }
 
   private List<String> getServiceEndpoints() {
-    return SpServiceDiscovery.getServiceDiscovery().getServiceEndpoints(DefaultSpServiceGroups.EXT, true,
-        Collections.singletonList(this.spServiceUrlProvider.getServiceTag(appId).asString()));
+    return SpServiceDiscovery
+        .getServiceDiscovery()
+        .getServiceEndpoints(
+            DefaultSpServiceTypes.EXT,
+            true,
+            Collections
+                .singletonList(
+                    this.spServiceUrlProvider
+                        .getServiceTag(appId)
+                        .asString()
+                )
+        );
   }
 
   private String selectService() throws NoServiceEndpointsAvailableException {

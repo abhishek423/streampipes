@@ -18,18 +18,29 @@
 
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { CurrentUserService } from '@streampipes/shared-ui';
 
 @Component({
     selector: 'sp-streampipes',
     templateUrl: './streampipes.component.html',
     styleUrls: ['./streampipes.component.scss'],
+    animations: [
+        trigger('fadeSlideInOut', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate('1000ms', style({ opacity: 1 })),
+            ]),
+            transition(':leave', [animate('1000ms', style({ opacity: 0 }))]),
+        ]),
+    ],
 })
 export class StreampipesComponent implements OnInit {
     darkMode: boolean;
 
-    constructor(public authService: AuthService) {}
+    constructor(public currentUserService: CurrentUserService) {}
 
     ngOnInit(): void {
-        this.authService.darkMode$.subscribe(dm => (this.darkMode = dm));
+        this.currentUserService.darkMode$.subscribe(dm => (this.darkMode = dm));
     }
 }

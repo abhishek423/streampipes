@@ -16,11 +16,11 @@
  *
  */
 
-import { SpecificAdapterBuilder } from '../../support/builder/SpecificAdapterBuilder';
 import { PipelineElementBuilder } from '../../support/builder/PipelineElementBuilder';
 import { ThirdPartyIntegrationUtils } from '../../support/utils/ThirdPartyIntegrationUtils';
 import { PipelineElementInput } from '../../support/model/PipelineElementInput';
 import { ParameterUtils } from '../../support/utils/ParameterUtils';
+import { AdapterBuilder } from '../../support/builder/AdapterBuilder';
 
 describe('Test InfluxDB Integration', () => {
     beforeEach('Setup Test', () => {
@@ -38,7 +38,7 @@ describe('Test InfluxDB Integration', () => {
             .addInput('input', 'db_port', '8086')
             .addInput('input', 'db_name', 'sp')
             .addInput('input', 'db_measurement', dbName)
-            .addInput('select', 'db_authentication-token', 'check')
+            .addInput('radio', 'db_authentication-token', '')
             .addInput('input', 'undefined-db_token-0', 'sp-admin')
             .addInput('input', 'batch_interval_actions', '2')
             .addInput(
@@ -49,13 +49,13 @@ describe('Test InfluxDB Integration', () => {
             .addInput('drop-down', 'timestamp_mapping', 'timestamp')
             .build();
 
-        const adapter = SpecificAdapterBuilder.create('InfluxDB_Stream_Adapter')
+        const adapter = AdapterBuilder.create('InfluxDB_Stream_Adapter')
             .setName('InfluxDB Adapter')
             .addInput('input', 'db_host', host)
             .addInput('input', 'db_port', '8086')
             .addInput('input', 'db_name', 'sp')
             .addInput('input', 'db_measurement', dbName)
-            .addInput('select', 'db_authentication-token', 'check')
+            .addInput('radio', 'db_authentication-token', '')
             .addInput('input', 'undefined-db_token-0', 'sp-admin')
             .addInput('input', 'pollingInterval', '200')
             .build();

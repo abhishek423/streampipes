@@ -23,6 +23,8 @@ import org.apache.streampipes.service.core.migrations.v070.CreateAssetLinkTypeMi
 import org.apache.streampipes.service.core.migrations.v070.CreateDefaultAssetMigration;
 import org.apache.streampipes.service.core.migrations.v070.CreateFileAssetTypeMigration;
 import org.apache.streampipes.service.core.migrations.v090.UpdateUsernameViewMigration;
+import org.apache.streampipes.service.core.migrations.v093.AdapterMigration;
+import org.apache.streampipes.service.core.migrations.v093.ConsulConfigMigration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +36,9 @@ public class AvailableMigrations {
         new CreateAssetLinkTypeMigration(),
         new CreateDefaultAssetMigration(),
         new CreateFileAssetTypeMigration(),
-        new UpdateUsernameViewMigration()
+        new UpdateUsernameViewMigration(),
+        new AdapterMigration(),
+        new ConsulConfigMigration()
     );
   }
 }

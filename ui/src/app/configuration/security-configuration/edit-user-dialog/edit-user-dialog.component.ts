@@ -17,15 +17,15 @@
  */
 
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { DialogRef } from '@streampipes/shared-ui';
+import { CurrentUserService, DialogRef } from '@streampipes/shared-ui';
 import {
     Group,
+    MailConfigService,
     Role,
     ServiceAccount,
     UserAccount,
-    MailConfigService,
-    UserService,
     UserGroupService,
+    UserService,
 } from '@streampipes/platform-services';
 import {
     AbstractControl,
@@ -75,6 +75,7 @@ export class EditUserDialogComponent implements OnInit {
         private fb: UntypedFormBuilder,
         private userService: UserService,
         private userGroupService: UserGroupService,
+        private currentUserService: CurrentUserService,
         private authService: AuthService,
         private router: Router,
         private mailConfigService: MailConfigService,
@@ -165,7 +166,7 @@ export class EditUserDialogComponent implements OnInit {
                 this.emailChanged =
                     this.clonedUser.username !== this.user.username &&
                     this.user.username ===
-                        this.authService.getCurrentUser().username &&
+                        this.currentUserService.getCurrentUser().username &&
                     this.editMode;
                 this.clonedUser.fullName = v.fullName;
                 if (!this.editMode) {

@@ -17,22 +17,25 @@
  */
 package org.apache.streampipes.connect.iiot.adapters.simulator.machine;
 
-import org.apache.streampipes.extensions.api.connect.exception.AdapterException;
-import org.apache.streampipes.extensions.management.connect.adapter.model.pipeline.AdapterPipeline;
+import org.apache.streampipes.commons.exceptions.connect.AdapterException;
+import org.apache.streampipes.extensions.api.connect.IEventCollector;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MachineDataSimulator implements Runnable {
 
-  private final AdapterPipeline adapterPipeline;
+  private IEventCollector collector;
+
   private final Integer waitTimeMs;
   private final String selectedSimulatorOption;
 
   private Boolean running;
 
-  public MachineDataSimulator(AdapterPipeline adapterPipeline, Integer waitTimeMs, String selectedSimulatorOption) {
-    this.adapterPipeline = adapterPipeline;
+  public MachineDataSimulator(IEventCollector collector,
+                              Integer waitTimeMs,
+                              String selectedSimulatorOption) {
+    this.collector = collector;
     this.waitTimeMs = waitTimeMs;
     this.selectedSimulatorOption = selectedSimulatorOption;
     this.running = true;
@@ -97,7 +100,7 @@ public class MachineDataSimulator implements Runnable {
       }
 
       if (event.keySet().size() > 0) {
-        adapterPipeline.process(event);
+        collector.collect(event);
       }
 
       try {

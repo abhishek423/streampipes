@@ -17,54 +17,32 @@
  */
 package org.apache.streampipes.wrapper.context;
 
-import org.apache.streampipes.client.StreamPipesClient;
-import org.apache.streampipes.extensions.management.config.ConfigExtractor;
-import org.apache.streampipes.extensions.management.monitoring.SpMonitoringManager;
-import org.apache.streampipes.model.runtime.SchemaInfo;
-import org.apache.streampipes.model.runtime.SourceInfo;
-
-import java.util.List;
+import org.apache.streampipes.client.api.IStreamPipesClient;
+import org.apache.streampipes.extensions.api.config.IConfigExtractor;
+import org.apache.streampipes.extensions.api.monitoring.IExtensionsLogger;
+import org.apache.streampipes.extensions.api.pe.context.RuntimeContext;
 
 public class SpRuntimeContext implements RuntimeContext {
 
-  private List<SchemaInfo> inputSchemaInfo;
-  private List<SourceInfo> sourceInfo;
-  private String correspondingUser;
-  private ConfigExtractor configExtractor;
-  private StreamPipesClient streamPipesClient;
-  private SpMonitoringManager spLogManager;
 
-  public SpRuntimeContext(List<SourceInfo> sourceInfo,
-                          List<SchemaInfo> inputSchemaInfo,
-                          String correspondingUser,
-                          ConfigExtractor configExtractor,
-                          StreamPipesClient streamPipesClient,
-                          SpMonitoringManager spLogManager) {
-    this.inputSchemaInfo = inputSchemaInfo;
-    this.sourceInfo = sourceInfo;
+  private final String correspondingUser;
+  private final IConfigExtractor configExtractor;
+  private final IStreamPipesClient streamPipesClient;
+  private final IExtensionsLogger extensionsLogger;
+
+  public SpRuntimeContext(String correspondingUser,
+                          IConfigExtractor configExtractor,
+                          IStreamPipesClient streamPipesClient,
+                          IExtensionsLogger extensionsLogger) {
     this.correspondingUser = correspondingUser;
     this.configExtractor = configExtractor;
     this.streamPipesClient = streamPipesClient;
-    this.spLogManager = spLogManager;
-  }
-
-  public SpRuntimeContext() {
-
+    this.extensionsLogger = extensionsLogger;
   }
 
   @Override
-  public SpMonitoringManager getLogger() {
-    return spLogManager;
-  }
-
-  @Override
-  public List<SchemaInfo> getInputSchemaInfo() {
-    return inputSchemaInfo;
-  }
-
-  @Override
-  public List<SourceInfo> getInputSourceInfo() {
-    return sourceInfo;
+  public IExtensionsLogger getLogger() {
+    return extensionsLogger;
   }
 
   @Override
@@ -73,12 +51,12 @@ public class SpRuntimeContext implements RuntimeContext {
   }
 
   @Override
-  public ConfigExtractor getConfigStore() {
+  public IConfigExtractor getConfigStore() {
     return this.configExtractor;
   }
 
   @Override
-  public StreamPipesClient getStreamPipesClient() {
+  public IStreamPipesClient getStreamPipesClient() {
     return streamPipesClient;
   }
 }

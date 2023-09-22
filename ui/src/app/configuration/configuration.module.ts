@@ -23,18 +23,12 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule } from '@ngbracket/ngx-layout';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfigurationService } from './shared/configuration.service';
-import { ConsulServiceComponent } from './consul-service/consul-service.component';
-import { ConsulConfigsComponent } from './consul-configs/consul-configs.component';
-import { ConsulConfigsTextComponent } from './consul-configs-text/consul-configs-text.component';
-import { ConsulConfigsPasswordComponent } from './consul-configs-password/consul-configs-password.component';
-import { ConsulConfigsBooleanComponent } from './consul-configs-boolean/consul-configs-boolean.component';
-import { ConsulConfigsNumberComponent } from './consul-configs-number/consul-configs-number.component';
+
 import { CustomMaterialModule } from '../CustomMaterial/custom-material.module';
-import { PipelineElementConfigurationComponent } from './pipeline-element-configuration/pipeline-element-configuration.component';
 import { MessagingConfigurationComponent } from './messaging-configuration/messaging-configuration.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatalakeConfigurationComponent } from './datalake-configuration/datalake-configuration.component';
@@ -58,6 +52,18 @@ import { SpDataExportImportComponent } from './export/data-export-import.compone
 import { SpDataExportDialogComponent } from './export/export-dialog/data-export-dialog.component';
 import { SpDataImportDialogComponent } from './export/import-dialog/data-import-dialog.component';
 import { SpDataExportItemComponent } from './export/export-dialog/data-export-item/data-export-item.component';
+import { SpEditLabelComponent } from './label-configuration/edit-label/edit-label.component';
+import { SpLabelConfigurationComponent } from './label-configuration/label-configuration.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { ExtensionsServiceManagementComponent } from './extensions-service-management/extensions-service-management.component';
+import { ServiceConfigsComponent } from './extensions-service-management/extensions-service-configuration/service-configs/service-configs.component';
+import { ServiceConfigsTextComponent } from './extensions-service-management/extensions-service-configuration/service-configs/service-configs-text/service-configs-text.component';
+import { ServiceConfigsPasswordComponent } from './extensions-service-management/extensions-service-configuration/service-configs/service-configs-password/service-configs-password.component';
+import { ServiceConfigsBooleanComponent } from './extensions-service-management/extensions-service-configuration/service-configs/service-configs-boolean/service-configs-boolean.component';
+import { ServiceConfigsNumberComponent } from './extensions-service-management/extensions-service-configuration/service-configs/service-configs-number/service-configs-number.component';
+import { SpRegisteredExtensionsServiceComponent } from './extensions-service-management/registrered-extensions-services/registered-extensions-services.component';
+import { SpExtensionsServiceConfigurationComponent } from './extensions-service-management/extensions-service-configuration/extensions-service-configuration.component';
+import { SpMessagingBrokerConfigComponent } from './messaging-configuration/broker-config/broker-config.component';
 
 @NgModule({
     imports: [
@@ -103,12 +109,16 @@ import { SpDataExportItemComponent } from './export/export-dialog/data-export-it
                         component: SpDataExportImportComponent,
                     },
                     {
+                        path: 'labels',
+                        component: SpLabelConfigurationComponent,
+                    },
+                    {
                         path: 'messaging',
                         component: MessagingConfigurationComponent,
                     },
                     {
-                        path: 'pipelineelement',
-                        component: PipelineElementConfigurationComponent,
+                        path: 'extensions-services',
+                        component: ExtensionsServiceManagementComponent,
                     },
                     {
                         path: 'security',
@@ -118,20 +128,20 @@ import { SpDataExportItemComponent } from './export/export-dialog/data-export-it
             },
         ]),
         SharedUiModule,
+        ColorPickerModule,
     ],
     declarations: [
-        ConsulServiceComponent,
-        ConsulConfigsComponent,
-        ConsulConfigsTextComponent,
-        ConsulConfigsPasswordComponent,
-        ConsulConfigsBooleanComponent,
-        ConsulConfigsNumberComponent,
+        ServiceConfigsComponent,
+        ServiceConfigsTextComponent,
+        ServiceConfigsPasswordComponent,
+        ServiceConfigsBooleanComponent,
+        ServiceConfigsNumberComponent,
         DeleteDatalakeIndexComponent,
         EditUserDialogComponent,
         EditGroupDialogComponent,
         EmailConfigurationComponent,
         GeneralConfigurationComponent,
-        PipelineElementConfigurationComponent,
+        ExtensionsServiceManagementComponent,
         SecurityAuthenticationConfigurationComponent,
         SecurityConfigurationComponent,
         SecurityUserConfigComponent,
@@ -143,6 +153,11 @@ import { SpDataExportItemComponent } from './export/export-dialog/data-export-it
         SpDataExportDialogComponent,
         SpDataExportItemComponent,
         SpDataImportDialogComponent,
+        SpEditLabelComponent,
+        SpLabelConfigurationComponent,
+        SpMessagingBrokerConfigComponent,
+        SpRegisteredExtensionsServiceComponent,
+        SpExtensionsServiceConfigurationComponent,
     ],
     providers: [ConfigurationService],
 })

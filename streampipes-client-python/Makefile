@@ -17,22 +17,23 @@
 
 .PHONY: check
 check: mypy lint unit-tests
+	poetry run interrogate -c pyproject.toml
 
 .PHONY: doc
 doc:
-	mkdocs build
+	poetry run mkdocs build
 
 .PHONY: lint
 lint:
-	flake8 streampipes --max-line-length 120
+	poetry run flake8 streampipes --max-line-length 120
 
 .PHONY: livedoc
 livedoc: doc
-	mkdocs serve --dirtyreload
+	poetry run mkdocs serve --dirtyreload
 
 .PHONY: mypy
 mypy:
-	mypy streampipes --warn-unused-ignores --warn-redundant-casts --pretty
+	poetry run mypy streampipes --config-file pyproject.toml
 
 .PHONY: rebase
 rebase:
@@ -40,15 +41,15 @@ rebase:
 
 .PHONY: reformat-all
 reformat-all:
-	pyupgrade --py38 --keep-runtime-typing
-	autoflake -r --remove-all-unused-imports --expand-star-imports --in-place streampipes tests
-	isort --profile black streampipes tests
-	black --line-length=120 streampipes tests
+	poetry run pyupgrade --py38 --keep-runtime-typing
+	poetry run autoflake -r --remove-all-unused-imports --expand-star-imports --in-place streampipes tests
+	poetry run isort --settings-file pyproject.toml
+	poetry run black --line-length=120 streampipes tests
 
 .PHONY: pre-commit
 pre-commit:
-	git ls-files -- 'streampipes/**/*' | xargs pre-commit run --verbose --files
+	git ls-files -- 'streampipes/**/*' | xargs poetry run pre-commit run --verbose --files
 
 .PHONY: unit-tests
 unit-tests:
-	pytest --cov=streampipes tests/ --cov-fail-under=90 --cov-report term-missing --no-cov-on-fail
+	poetry run pytest --cov=streampipes tests/ --cov-fail-under=90 --cov-report term-missing --no-cov-on-fail

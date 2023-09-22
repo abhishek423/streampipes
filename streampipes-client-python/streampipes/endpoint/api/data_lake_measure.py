@@ -20,18 +20,18 @@ Specific implementation of the StreamPipes API's data lake measure endpoints.
 This endpoint allows to consume data stored in StreamPipes' data lake.
 """
 from datetime import datetime
-from typing import Any, Dict, Literal, Optional, Tuple, Type
+from typing import Any, Dict, List, Literal, Optional, Tuple, Type
 
 from pydantic import BaseModel, Extra, Field, StrictInt, ValidationError, validator
+
 from streampipes.endpoint.endpoint import APIEndpoint
 from streampipes.model.container import DataLakeMeasures
 from streampipes.model.container.resource_container import ResourceContainer
+from streampipes.model.resource.query_result import QueryResult
 
 __all__ = [
     "DataLakeMeasureEndpoint",
 ]
-
-from streampipes.model.resource.query_result import QueryResult
 
 
 class StreamPipesQueryValidationError(Exception):
@@ -50,7 +50,7 @@ class MeasurementGetQueryConfig(BaseModel):
 
     Attributes
     ----------
-    columns: Optional[str]
+    columns: Optional[List[str]]
         A comma separated list of column names (e.g., `time,value`)<br>
         If provided, the returned data only consists of the given columns.<br>
         Please be aware that the column `time` as an index is always included.
@@ -87,6 +87,39 @@ class MeasurementGetQueryConfig(BaseModel):
     order: Optional[Literal["ASC", "DESC"]]
     page_no: Optional[int] = Field(alias="page", ge=1)
     start_date: Optional[StrictInt] = Field(alias="startDate")
+
+    @validator("columns", pre=True)
+    @classmethod
+    def _convert_to_comma_separated_string(cls, value: Optional[List[str]]) -> Optional[str]:
+        """Pydantic validator to convert a list to a comma separated string.
+        This is necessary for the StreamPipes API.
+
+        Parameters
+        ----------
+        value: Any
+            The value to be converted to a comma separated string
+
+        Raises
+        ------
+        StreamPipesQueryValidationError
+            In case the provided value is not a list
+
+        Returns
+        -------
+        comma_separated_string: Optional[str]
+            The provided value converted to a comma separated string
+        """
+        if value is None:
+            return value
+        if not isinstance(value, list):
+            raise StreamPipesQueryValidationError(
+                f"The provided value for either `columns`" f"is not a list: '{value}'."
+            )
+        if len(value) == 0:
+            raise StreamPipesQueryValidationError(
+                f"The provided value for either `columns`" f"is an empty list: '{value}'."
+            )
+        return ",".join(value)
 
     @validator("end_date", "start_date", pre=True)
     @classmethod
@@ -159,9 +192,9 @@ class MeasurementGetQueryConfig(BaseModel):
 class DataLakeMeasureEndpoint(APIEndpoint):
     """Implementation of the DataLakeMeasure endpoint.
 
-    This endpoint provides an interfact to all data stored in the StreamPipes data lake.
+    This endpoint provides an interface to all data stored in the StreamPipes data lake.
 
-    Consequently, it allows uerying metadata about available data sets (see `all()` method).
+    Consequently, it allows querying metadata about available data sets (see `all()` method).
     The metadata is returned as an instance of [`DataLakeMeasures`][streampipes.model.container.DataLakeMeasures].
 
     In addition, the endpoint provides direct access to the data stored in the data laka by querying a

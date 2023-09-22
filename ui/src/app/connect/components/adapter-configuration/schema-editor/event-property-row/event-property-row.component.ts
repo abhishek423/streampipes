@@ -16,15 +16,7 @@
  *
  */
 
-import {
-    Component,
-    EventEmitter,
-    Input,
-    OnChanges,
-    OnInit,
-    Output,
-    SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UUID } from 'angular2-uuid';
 import { TreeNode } from '@circlon/angular-tree-component';
 import { MatDialog } from '@angular/material/dialog';
@@ -36,7 +28,6 @@ import {
     EventPropertyUnion,
     EventSchema,
     FieldStatusInfo,
-    GuessTypeInfo,
 } from '@streampipes/platform-services';
 import { EditEventPropertyComponent } from '../../../../dialog/edit-event-property/edit-event-property.component';
 import { DialogService, PanelType } from '@streampipes/shared-ui';
@@ -52,7 +43,6 @@ export class EventPropertyRowComponent implements OnInit {
     @Input() eventSchema: EventSchema = new EventSchema();
     @Input() originalEventSchema: EventSchema;
     @Input() countSelected: number;
-    @Input() eventPreview: Record<string, GuessTypeInfo>[];
     @Input() fieldStatusInfo: Record<string, FieldStatusInfo>;
 
     @Output() isEditableChange = new EventEmitter<boolean>();
@@ -66,7 +56,6 @@ export class EventPropertyRowComponent implements OnInit {
     isNested = false;
     isList = false;
     timestampProperty = false;
-    showEventPreview = false;
     showFieldStatus = false;
 
     runtimeType: string;
@@ -86,17 +75,16 @@ export class EventPropertyRowComponent implements OnInit {
         this.timestampProperty = this.isTimestampProperty(this.node.data);
 
         if (this.node.data instanceof EventProperty) {
-            this.originalRuntimeName = this.findOriginalProperty().runtimeName;
+            const originalProperty = this.findOriginalProperty(
+                this.originalEventSchema.eventProperties,
+            );
+            this.originalRuntimeName = originalProperty.runtimeName;
             this.showFieldStatus =
                 this.fieldStatusInfo &&
                 this.fieldStatusInfo[this.originalRuntimeName] !== undefined;
-            this.showEventPreview =
-                this.eventPreview &&
-                this.eventPreview.length > 0 &&
-                this.eventPreview[0][this.originalRuntimeName] !== undefined;
             if (this.isPrimitive) {
                 this.originalRuntimeType = this.parseType(
-                    this.findOriginalProperty().runtimeType,
+                    originalProperty.runtimeType,
                 );
                 this.runtimeType = this.parseType(
                     (this.node.data as EventPropertyPrimitive).runtimeType,
@@ -109,10 +97,21 @@ export class EventPropertyRowComponent implements OnInit {
         }
     }
 
-    private findOriginalProperty(): any {
-        return this.originalEventSchema.eventProperties.find(
-            ep => ep.elementId === this.node.data.elementId,
-        );
+    private findOriginalProperty(properties: EventPropertyUnion[]): any {
+        let result: EventPropertyUnion | undefined;
+
+        for (const property of properties) {
+            if (property.elementId === this.node.data.elementId) {
+                result = property;
+                break;
+            } else if (property instanceof EventPropertyNested) {
+                result = this.findOriginalProperty(property.eventProperties);
+                if (result) {
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     private parseType(runtimeType: string) {

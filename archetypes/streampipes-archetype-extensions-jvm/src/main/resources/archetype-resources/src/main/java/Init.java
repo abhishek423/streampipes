@@ -30,10 +30,15 @@ import org.apache.streampipes.extensions.management.model.SpServiceDefinitionBui
 import org.apache.streampipes.messaging.jms.SpJmsProtocolFactory;
 import org.apache.streampipes.messaging.kafka.SpKafkaProtocolFactory;
 import org.apache.streampipes.messaging.mqtt.SpMqttProtocolFactory;
+import org.apache.streampipes.messaging.pulsar.SpPulsarProtocolFactory;
+import org.apache.streampipes.messaging.nats.SpNatsProtocolFactory;
 import org.apache.streampipes.service.extensions.ExtensionsModelSubmitter;
+import org.apache.streampipes.wrapper.standalone.runtime.StandaloneStreamPipesRuntimeProvider;
 
 import ${package}.pe.${packageName}.${classNamePrefix}DataProcessor;
 import ${package}.pe.${packageName}.${classNamePrefix}DataSink;
+import ${package}.pe.${packageName}.${classNamePrefix}GenericAdapter;
+import ${package}.pe.${packageName}.${classNamePrefix}SpecificAdapter;
 
 public class Init extends ExtensionsModelSubmitter {
 
@@ -46,8 +51,11 @@ public class Init extends ExtensionsModelSubmitter {
     return SpServiceDefinitionBuilder.create("${package}",
             "human-readable service name",
             "human-readable service description", 8090)
+        .registerRuntimeProvider(new StandaloneStreamPipesRuntimeProvider())
         .registerPipelineElement(new ${classNamePrefix}DataProcessor())
         .registerPipelineElement(new ${classNamePrefix}DataSink())
+        .registerAdapter(new ${classNamePrefix}GenericAdapter())
+        .registerAdapter(new ${classNamePrefix}SpecificAdapter())
         .registerMessagingFormats(
             new JsonDataFormatFactory(),
             new CborDataFormatFactory(),
@@ -56,7 +64,9 @@ public class Init extends ExtensionsModelSubmitter {
         .registerMessagingProtocols(
             new SpKafkaProtocolFactory(),
             new SpJmsProtocolFactory(),
-            new SpMqttProtocolFactory())
+            new SpMqttProtocolFactory(),
+            new SpNatsProtocolFactory(),
+            new SpPulsarProtocolFactory())
         .build();
   }
 }

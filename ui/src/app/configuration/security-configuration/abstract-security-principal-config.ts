@@ -23,6 +23,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import {
     ServiceAccount,
     UserAccount,
+    UserAdminService,
     UserService,
 } from '@streampipes/platform-services';
 import { Observable } from 'rxjs';
@@ -44,6 +45,7 @@ export abstract class AbstractSecurityPrincipalConfig<
 
     constructor(
         protected userService: UserService,
+        protected userAdminService: UserAdminService,
         protected dialogService: DialogService,
     ) {}
 
